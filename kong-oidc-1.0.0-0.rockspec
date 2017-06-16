@@ -1,8 +1,8 @@
 package = "kong-oidc"
-version = "1.0.0"
+version = "1.0.0-0"
 source = {
     url = "https://github.com/nokia/kong-oidc",
-    tag = "v1.0.0"
+    tag = "v1.0.0-0"
 }
 description = {
     summary = "A Kong plugin for implementing the OpenID Connect Relying Party (RP) functionality",
