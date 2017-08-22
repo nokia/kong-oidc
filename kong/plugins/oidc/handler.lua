@@ -8,13 +8,14 @@ local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
 local session = require("kong.plugins.oidc.session")
 
+CustomHandler.PRIORITY = 1000
+
 -- Your plugin handler's constructor. If you are extending the
 -- Base Plugin handler, it's only role is to instanciate itself
 -- with a name. The name is your plugin name as it will be printed in the logs.
 function CustomHandler:new()
   CustomHandler.super.new(self, "oidc")
 end
-
 
 function CustomHandler:access(config)
   -- Eventually, execute the parent implementation
@@ -37,6 +38,7 @@ function CustomHandler:access(config)
     end
 
     if res then
+      utils.injectUser(res.user)
       ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
     end
   else

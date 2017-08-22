@@ -47,6 +47,11 @@ function M.exit(httpStatusCode, message, ngxCode)
   ngx.exit(ngxCode)
 end
 
+function M.injectUser(user)
+    ngx.ctx.authenticated_consumer = user
+    ngx.ctx.authenticated_consumer.id = user.sub
+end
+
 return M
 
 
