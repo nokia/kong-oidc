@@ -1,13 +1,14 @@
 package = "kong-oidc"
 version = "1.0.0-0"
 source = {
-    url = "https://github.com/nokia/kong-oidc",
-    tag = "v1.0.0-0"
+    url = "git://github.com/nokia/kong-oidc",
+    tag = "v1.0",
+    dir = "kongoidc"
 }
 description = {
     summary = "A Kong plugin for implementing the OpenID Connect Relying Party (RP) functionality",
     detailed = [[
-        kong-oifc is a Kong pluhin for implementing the OpenID Connect Relying Party.
+        kong-oidc is a Kong plugin for implementing the OpenID Connect Relying Party.
 
         When used as an OpenID Connect Relying Party it authenticates users against an OpenID Connect Provider using OpenID Connect Discovery and the Basic Client Profile (i.e. the Authorization Code flow).
 
