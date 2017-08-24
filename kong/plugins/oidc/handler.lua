@@ -22,16 +22,18 @@ function CustomHandler:access(config)
   -- (will log that your plugin is entering this context)
   CustomHandler.super.access(self)
 
-  if filter.shouldProcessRequest() then
-    ngx.log(ngx.DEBUG, "In plugin CustomHandler:access calling authenticate, requested path: "..ngx.var.request_uri)
+  local oidcConfig = utils.get_options(config, ngx)
+
+  if filter.shouldProcessRequest(oidcConfig) then
+    ngx.log(ngx.DEBUG, "In plugin CustomHandler:access calling authenticate, requested path: " .. ngx.var.request_uri)
 
     session.configure(config)
 
-    local res, err = require("resty.openidc").authenticate(utils.get_options(config, ngx))
+    local res, err = require("resty.openidc").authenticate(oidcConfig)
 
     if err then
       if config.recovery_page_path then
-        ngx.log(ngx.DEBUG, "Entering recovery page: "..config.recovery_page_path)
+        ngx.log(ngx.DEBUG, "Entering recovery page: " .. config.recovery_page_path)
         return ngx.redirect(config.recovery_page_path)
       end
       utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
@@ -42,11 +44,10 @@ function CustomHandler:access(config)
       ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
     end
   else
-    ngx.log(ngx.DEBUG, "In plugin CustomHandler:access NOT calling authenticate, requested path: "..ngx.var.request_uri)
+    ngx.log(ngx.DEBUG, "In plugin CustomHandler:access NOT calling authenticate, requested path: " .. ngx.var.request_uri)
   end
 
   ngx.log(ngx.DEBUG, "In plugin CustomHandler:access Done")
-
 end
 
 -- This module needs to return the created table, so that Kong

@@ -1,5 +1,15 @@
 local M = {}
 
+local function parseFilters(csvFilters)
+  filters = {}
+  if (not (csvFilters == nil)) then
+    for pattern in string.gmatch(csvFilters, "[^,]+") do
+      table.insert(filters, pattern)
+    end
+  end
+  return filters
+end
+
 function M.get_redirect_uri_path(ngx)
   local function drop_query()
     local uri = ngx.var.request_uri
@@ -37,7 +47,8 @@ function M.get_options(config, ngx)
     response_type = config.response_type,
     ssl_verify = config.ssl_verify,
     token_endpoint_auth_method = config.token_endpoint_auth_method,
-    recovery_page_path = config.recovery_page_path
+    recovery_page_path = config.recovery_page_path,
+    filters = parseFilters(config.filters)
   }
 end
 
@@ -48,10 +59,8 @@ function M.exit(httpStatusCode, message, ngxCode)
 end
 
 function M.injectUser(user)
-    ngx.ctx.authenticated_consumer = user
-    ngx.ctx.authenticated_consumer.id = user.sub
+  ngx.ctx.authenticated_consumer = user
+  ngx.ctx.authenticated_consumer.id = user.sub
 end
 
 return M
-
-

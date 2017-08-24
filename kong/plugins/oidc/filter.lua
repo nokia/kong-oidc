@@ -1,22 +1,17 @@
 local M = {}
 
-local function startsWith(text, prefix)
-  return string.sub(text, 1, string.len(prefix)) == prefix
-end
-
-local function shouldIgnoreRequest()
-  local ignore_paths = "/auth,/arc"  -- TODO. Need to have a common solution.
-  for path in string.gmatch(ignore_paths, "[^,]+") do
-    if  ngx.var.uri == path or startsWith(ngx.var.uri, path.."/") then
-      return true
+local function shouldIgnoreRequest(patterns)
+  if (patterns) then
+    for _, pattern in ipairs(patterns) do
+      local isMatching = not (string.find(ngx.var.uri, pattern) == nil)
+      if (isMatching) then return true end
     end
   end
   return false
 end
 
-
-function M.shouldProcessRequest()
-  return not shouldIgnoreRequest()
+function M.shouldProcessRequest(config)
+  return not shouldIgnoreRequest(config.filters)
 end
 
 return M
