@@ -39,7 +39,7 @@ function CustomHandler:access(config)
       utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
     end
 
-    if res then
+    if res and res.user then
       utils.injectUser(res.user)
       ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
     end
