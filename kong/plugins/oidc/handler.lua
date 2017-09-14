@@ -22,12 +22,12 @@ function CustomHandler:access(config)
   -- (will log that your plugin is entering this context)
   CustomHandler.super.access(self)
 
-  session.configure(config)
-
   local oidcConfig = utils.get_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
     ngx.log(ngx.DEBUG, "In plugin CustomHandler:access calling authenticate, requested path: " .. ngx.var.request_uri)
+
+    session.configure(config)
 
     if tryIntrospect(oidcConfig) then
 
