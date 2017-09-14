@@ -7,6 +7,7 @@ local CustomHandler = BasePlugin:extend()
 local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
 local session = require("kong.plugins.oidc.session")
+--local userinfo = require("kong.plugins.oidc.userinfo")
 
 CustomHandler.PRIORITY = 1000
 
@@ -22,27 +23,42 @@ function CustomHandler:access(config)
   -- (will log that your plugin is entering this context)
   CustomHandler.super.access(self)
 
+  session.configure(config)
+
   local oidcConfig = utils.get_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
     ngx.log(ngx.DEBUG, "In plugin CustomHandler:access calling authenticate, requested path: " .. ngx.var.request_uri)
 
-    session.configure(config)
+    local res, err = require("resty.openidc").introspect(oidcConfig)
 
-    local res, err = require("resty.openidc").authenticate(oidcConfig)
+    if not err then
 
-    if err then
-      if config.recovery_page_path then
-        ngx.log(ngx.DEBUG, "Entering recovery page: " .. config.recovery_page_path)
-        return ngx.redirect(config.recovery_page_path)
+      ngx.log(ngx.DEBUG, "In plugin CustomHandler:proceeding with two legged authentication, requested path: " .. ngx.var.request_uri)
+
+      if res then
+        utils.injectUser(res)
       end
-      utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
+
+    else
+
+      local res, err = require("resty.openidc").authenticate(oidcConfig)
+
+      if err then
+        if config.recovery_page_path then
+          ngx.log(ngx.DEBUG, "Entering recovery page: " .. config.recovery_page_path)
+          return ngx.redirect(config.recovery_page_path)
+        end
+        utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
+      end
+
+      if res and res.user then
+        utils.injectUser(res.user)
+        ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
+      end
+
     end
 
-    if res and res.user then
-      utils.injectUser(res.user)
-      ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
-    end
   else
     ngx.log(ngx.DEBUG, "In plugin CustomHandler:access NOT calling authenticate, requested path: " .. ngx.var.request_uri)
   end
