@@ -30,15 +30,9 @@ function CustomHandler:access(config)
   if filter.shouldProcessRequest(oidcConfig) then
     ngx.log(ngx.DEBUG, "In plugin CustomHandler:access calling authenticate, requested path: " .. ngx.var.request_uri)
 
-    local res, err = require("resty.openidc").introspect(oidcConfig)
-
-    if not err then
+    if tryIntrospect(oidcConfig) then
 
       ngx.log(ngx.DEBUG, "In plugin CustomHandler:proceeding with two legged authentication, requested path: " .. ngx.var.request_uri)
-
-      if res then
-        utils.injectUser(res)
-      end
 
     else
 
@@ -64,6 +58,22 @@ function CustomHandler:access(config)
   end
 
   ngx.log(ngx.DEBUG, "In plugin CustomHandler:access Done")
+end
+
+function tryIntrospect(oidcConfig)
+  
+  -- If introspection endpoint is not set, the functionallity is considered as disabled
+  if not oidcConfig.introspection_endpoint then
+    return nil
+  end
+  
+  local res, err = require("resty.openidc").introspect(oidcConfig)
+  if err then
+    return nil
+  end
+
+  return res
+
 end
 
 -- This module needs to return the created table, so that Kong
