@@ -17,6 +17,9 @@ It can be used as a reverse proxy terminating OAuth/OpenID Connect in front of a
 the origin server/services can be protected with the relevant standards without implementing those on
 the server itself.
 
+Introspection functionality add capability for already authenticated users and/or applications that
+already posses acces token to go through kong. The actual token verification is then done by Resource Server.
+
 ## Dependencies
 
 **kong-oidc** depends on the following package:
