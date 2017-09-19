@@ -29,34 +29,43 @@ function CustomHandler:access(config)
 
     session.configure(config)
 
-    if tryIntrospect(oidcConfig) then
-
-      ngx.log(ngx.DEBUG, "In plugin CustomHandler:proceeding with two legged authentication, requested path: " .. ngx.var.request_uri)
-
-    else
-
-      local res, err = require("resty.openidc").authenticate(oidcConfig)
-
-      if err then
-        if config.recovery_page_path then
-          ngx.log(ngx.DEBUG, "Entering recovery page: " .. config.recovery_page_path)
-          return ngx.redirect(config.recovery_page_path)
-        end
-        utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
-      end
-
-      if res and res.user then
-        utils.injectUser(res.user)
-        ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
-      end
-
-    end
+    doAuthentication(oidcConfig)
 
   else
     ngx.log(ngx.DEBUG, "In plugin CustomHandler:access NOT calling authenticate, requested path: " .. ngx.var.request_uri)
   end
 
   ngx.log(ngx.DEBUG, "In plugin CustomHandler:access Done")
+end
+
+function doAuthentication(oidcConfig)
+
+  res = tryIntrospect(oidcConfig)
+  if res then
+
+    ngx.log(ngx.DEBUG, "In plugin CustomHandler:Valid access token detected, passing connection, requested path: " .. ngx.var.request_uri)
+
+    utils.injectUser({sub = res.sub})
+
+  else
+
+    local res, err = require("resty.openidc").authenticate(oidcConfig)
+
+    if err then
+      if config.recovery_page_path then
+        ngx.log(ngx.DEBUG, "Entering recovery page: " .. config.recovery_page_path)
+        return ngx.redirect(config.recovery_page_path)
+      end
+      utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
+    end
+
+    if res and res.user then
+      utils.injectUser(res.user)
+      ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
+    end
+
+  end
+
 end
 
 function tryIntrospect(oidcConfig)
