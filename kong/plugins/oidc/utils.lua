@@ -42,6 +42,7 @@ function M.get_options(config, ngx)
     client_id = config.client_id,
     client_secret = config.client_secret,
     discovery = config.discovery,
+    introspection_endpoint = config.introspection_endpoint,
     redirect_uri_path = M.get_redirect_uri_path(ngx),
     scope = config.scope,
     response_type = config.response_type,

@@ -29,6 +29,26 @@ function CustomHandler:access(config)
 
     session.configure(config)
 
+    doAuthentication(oidcConfig)
+
+  else
+    ngx.log(ngx.DEBUG, "In plugin CustomHandler:access NOT calling authenticate, requested path: " .. ngx.var.request_uri)
+  end
+
+  ngx.log(ngx.DEBUG, "In plugin CustomHandler:access Done")
+end
+
+function doAuthentication(oidcConfig)
+
+  res = tryIntrospect(oidcConfig)
+  if res then
+
+    ngx.log(ngx.DEBUG, "In plugin CustomHandler:Valid access token detected, passing connection, requested path: " .. ngx.var.request_uri)
+
+    utils.injectUser({sub = res.sub})
+
+  else
+
     local res, err = require("resty.openidc").authenticate(oidcConfig)
 
     if err then
@@ -43,11 +63,25 @@ function CustomHandler:access(config)
       utils.injectUser(res.user)
       ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
     end
-  else
-    ngx.log(ngx.DEBUG, "In plugin CustomHandler:access NOT calling authenticate, requested path: " .. ngx.var.request_uri)
+
   end
 
-  ngx.log(ngx.DEBUG, "In plugin CustomHandler:access Done")
+end
+
+function tryIntrospect(oidcConfig)
+  
+  -- If introspection endpoint is not set, the functionallity is considered as disabled
+  if not oidcConfig.introspection_endpoint then
+    return nil
+  end
+  
+  local res, err = require("resty.openidc").introspect(oidcConfig)
+  if err then
+    return nil
+  end
+
+  return res
+
 end
 
 -- This module needs to return the created table, so that Kong
