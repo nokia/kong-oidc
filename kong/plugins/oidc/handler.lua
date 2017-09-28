@@ -45,14 +45,6 @@ function handle(oidcConfig)
       ngx.req.set_header("X-Userinfo", cjson.encode(response.user))
     end
   end
-
-end
-
-function doAuthentication(oidcConfig)
-  if res and res.user then
-    utils.injectUser(res.user)
-    ngx.req.set_header("X-Userinfo", require("cjson").encode(res.user))
-  end
 end
 
 function make_oidc(oidcConfig)
