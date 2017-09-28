@@ -60,8 +60,10 @@ function M.exit(httpStatusCode, message, ngxCode)
 end
 
 function M.injectUser(user)
-  ngx.ctx.authenticated_consumer = user
-  ngx.ctx.authenticated_consumer.id = user.sub
+  local tmp_user = user
+  tmp_user.id = user.sub
+  tmp_user.username = user.preferred_username
+  ngx.ctx.authenticated_consumer = tmp_user
 end
 
 return M
