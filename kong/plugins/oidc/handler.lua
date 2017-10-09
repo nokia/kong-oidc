@@ -4,7 +4,6 @@ local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
 local session = require("kong.plugins.oidc.session")
 
-local openidc = require("resty.openidc")
 local cjson = require("cjson")
 
 OidcHandler.PRIORITY = 1000
@@ -19,18 +18,17 @@ function OidcHandler:access(config)
   local oidcConfig = utils.get_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
-    ngx.log(ngx.DEBUG, "In plugin OidcHandler:access calling authenticate, requested path: " .. ngx.var.request_uri)
     session.configure(config)
     handle(oidcConfig)
   else
-    ngx.log(ngx.DEBUG, "In plugin OidcHandler:access NOT calling authenticate, requested path: " .. ngx.var.request_uri)
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring request, path: " .. ngx.var.request_uri)
   end
 
-  ngx.log(ngx.DEBUG, "In plugin OidcHandler:access Done")
+  ngx.log(ngx.DEBUG, "OidcHandler done")
 end
 
 function handle(oidcConfig)
-  local response = nil
+  local response
   if oidcConfig.introspection_endpoint then
     response = introspect(oidcConfig)
     if response then
@@ -48,7 +46,8 @@ function handle(oidcConfig)
 end
 
 function make_oidc(oidcConfig)
-  local res, err = openidc.authenticate(oidcConfig)
+  ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
+  local res, err = require("resty.openidc").authenticate(oidcConfig)
   if err then
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
@@ -60,11 +59,15 @@ function make_oidc(oidcConfig)
 end
 
 function introspect(oidcConfig)
-  local res, err = openidc.introspect(oidcConfig)
-  if err then
-    return nil
+  if utils.has_bearer_access_token() then
+    local res, err = require("resty.openidc").introspect(oidcConfig)
+    if err then
+      return nil
+    end
+    ngx.log(ngx.DEBUG, "OidcHandler introspect succeeded, requested path: " .. ngx.var.request_uri)
+    return res
   end
-  return res
+  return nil
 end
 
 
