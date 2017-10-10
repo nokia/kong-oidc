@@ -1,0 +1,30 @@
+# .travis.yaml
+
+language: python
+
+sudo: false
+
+env:
+  - LUA="lua=5.1"
+  - LUA="lua=5.2"
+#  - LUA="lua=5.3"
+  - LUA="luajit=2.0"
+  - LUA="luajit=2.1"
+
+before_install:
+  - pip install hererocks
+  - hererocks lua_install -r^ --$LUA
+  - export PATH=$PATH:$PWD/lua_install/bin
+
+install:
+  - luarocks install kong
+  - luarocks install lua-resty-openidc
+  - luarocks install luaunit
+
+script:
+  - lua test/unit/test_filter.lua -o TAP
+#  - lua test/unit/test_filters_advanced.lua -o TAP
+#  - lua test/unit/test_utils.lua -o TAP
+#  - lua test/unit/test_handler_mocking_openidc.lua -o TAP
+#  - lua test/unit/test_introspect.lua -o TAP
+#  - lua test/unit/test_utils_bearer_access_token.lua -o TAP
