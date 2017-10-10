@@ -1,5 +1,5 @@
 local utils = require("kong.plugins.oidc.utils")
-local lu = require("test.lib.luaunit_agent")
+local lu = require("luaunit")
 
 
 TestToken = {}

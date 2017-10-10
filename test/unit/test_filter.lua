@@ -1,5 +1,5 @@
 local filter = require("kong.plugins.oidc.filter")
-local lu = require("test.lib.luaunit_agent")
+local lu = require("luaunit")
 
 TestFilter = {}
 ngx = {

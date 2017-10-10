@@ -1,6 +1,6 @@
 package.path = package.path .. ";test/lib/?.lua;;" -- kong & co
 
-local lu = require("luaunit_agent")
+local lu = require("luaunit")
 
 
 TestHandler = {}
