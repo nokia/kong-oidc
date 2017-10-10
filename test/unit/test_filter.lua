@@ -43,3 +43,5 @@ function TestFilter:testProcessRequestWhenTheyAreNoFiltersEmpty()
 end
 
 lu.run()
+
+
