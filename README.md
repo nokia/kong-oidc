@@ -1,13 +1,11 @@
-# What is Kong OIDC plugin 
+# What is Kong OIDC plugin
 
-**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)] <br/>
-
-https://travis-ci.org/nokia/kong-oidc.svg?branch=master
+**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc) <br/>
 
 **kong-oidc** is a plugin for [Kong](https://github.com/Mashape/kong) implementing the
 [OpenID Connect](http://openid.net/specs/openid-connect-core-1_0.html) Relying Party (RP) functionality.
 
-It authenticates users against an OpenID Connect Provider using 
+It authenticates users against an OpenID Connect Provider using
 [OpenID Connect Discovery](http://openid.net/specs/openid-connect-discovery-1_0.html)
 and the Basic Client Profile (i.e. the Authorization Code flow).
 
