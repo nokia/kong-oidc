@@ -1,6 +1,6 @@
 # What is Kong OIDC plugin 
 
-**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc) <br/>
+**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)] <br/>
 
 https://travis-ci.org/nokia/kong-oidc.svg?branch=master
 
