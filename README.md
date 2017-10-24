@@ -69,9 +69,9 @@ You also need to set the `KONG_CUSTOM_PLUGINS` environment variable
 | `name` || true | plugin name, has to be `oidc` |
 | `config.client_id` || true | OIDC Client ID |
 | `config.client_secret` || true | OIDC Client secret |
-| `config.discovery` | https://.well-known/openid-configuration | true | OIDC Discovery Endpoint (`/.well-known/openid-configuration`) |
+| `config.discovery` | https://.well-known/openid-configuration | false | OIDC Discovery Endpoint (`/.well-known/openid-configuration`) |
 | `config.scope` | oidc | false| OAuth2 Token scope. To use OIDC it has to contains the `oidc` scope |
-| `config.ssl_verify` | false | true | Enable SSL verification to OIDC Provider |
+| `config.ssl_verify` | false | false | Enable SSL verification to OIDC Provider |
 | `config.session_secret` | | false | Additional parameter, which is used to encrypt the session cookie. Needs to be random |
 
 ### Enabling
