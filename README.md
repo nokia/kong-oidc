@@ -37,7 +37,7 @@ X-Userinfo: {"preferred_username":"alice","id":"60f65308-3510-40ca-83f0-e9c0151c
 The plugin also sets the `ngx.ctx.authenticated_consumer` variable, which can be using in other Kong plugins:
 ```
 ngx.ctx.authenticated_consumer = {
-	id = "60f65308-3510-40ca-83f0-e9c0151cc680"    -- sub field from Userinfo
+    id = "60f65308-3510-40ca-83f0-e9c0151cc680",   -- sub field from Userinfo
     username = "alice"                             -- preferred_username from Userinfo
 }
 ```
@@ -84,7 +84,7 @@ Host: localhost:8001
 Content-Type: application/x-www-form-urlencoded
 Cache-Control: no-cache
 
-name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e9-9ba5e7382fa0&config.discovery=http%3A%2F%2Fkeycloak%3A8080%2Fauth%2Frealms%2Fmaster%2F.well-known%2Fopenid-configuration
+name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e9-9ba5e7382fa0&config.discovery=https%3A%2F%2F<oidc_provider>%2F.well-known%2Fopenid-configuration
 ```
 
 To enable the plugin globally:
@@ -94,7 +94,7 @@ Host: localhost:8001
 Content-Type: application/x-www-form-urlencoded
 Cache-Control: no-cache
 
-name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e9-9ba5e7382fa0&config.discovery=http%3A%2F%2Fkeycloak%3A8080%2Fauth%2Frealms%2Fmaster%2F.well-known%2Fopenid-configuration
+name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e9-9ba5e7382fa0&config.discovery=https%3A%2F%2F<oidc_provider>%2F.well-known%2Fopenid-configuration
 ```
 
 A successful response:
@@ -112,7 +112,7 @@ Server: kong/0.11.0
     "config": {
         "response_type": "code",
         "client_id": "kong-oidc",
-        "discovery": "http://keycloak:8080/auth/realms/master/.well-known/openid-configuration",
+        "discovery": "https://<oidc_provider>/.well-known/openid-configuration",
         "scope": "openid",
         "ssl_verify": "no",
         "client_secret": "29d98bf7-168c-4874-b8e9-9ba5e7382fa0",
