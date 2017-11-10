@@ -1,3 +1,8 @@
+--[[
+-- https://mockbin.org/docs#api-endpoints
+-- http://www.softwareishard.com/blog/har-12-spec/#response
+--]]
+
 local http = require("socket.http")
 local ltn12 = require("ltn12")
 local json = require("json")
@@ -125,8 +130,8 @@ function _M.create_endpoints()
   return discovery(authorization(), token(), userinfo())
 end
 
-print(get("42e386e4-40f4-41ab-accd-7b5ca92708bd"))
---print("discovery bid: " .. _M.create_endpoints())
+-- print(get("42e386e4-40f4-41ab-accd-7b5ca92708bd"))
+-- print("discovery bid: " .. _M.create_endpoints())
 
 return _M
 
