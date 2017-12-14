@@ -5,6 +5,7 @@ return {
     client_secret = { type = "string", required = true },
     discovery = { type = "string", required = true, default = "https://.well-known/openid-configuration" },
     introspection_endpoint = { type = "string", required = false },
+    bearer_only = { type = "string", required = false, default = "no" },
     redirect_uri_path = { type = "string" },
     scope = { type = "string", required = true, default = "openid" },
     response_type = { type = "string", required = true, default = "code" },

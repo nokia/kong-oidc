@@ -62,6 +62,9 @@ function introspect(oidcConfig)
   if utils.has_bearer_access_token() then
     local res, err = require("resty.openidc").introspect(oidcConfig)
     if err then
+      if oidcConfig.bearer_only == "yes" then
+        utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
+      end
       return nil
     end
     ngx.log(ngx.DEBUG, "OidcHandler introspect succeeded, requested path: " .. ngx.var.request_uri)
