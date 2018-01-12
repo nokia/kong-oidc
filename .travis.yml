@@ -17,8 +17,8 @@ before_install:
   - export PATH=$PATH:$PWD/lua_install/bin
 
 install:
-  - luarocks install kong
-  - luarocks install lua-resty-openidc
+  - luarocks install kong 0.11.2-0
+  - luarocks install lua-resty-openidc 1.4.0-1
   - luarocks install luaunit
 
 script:
