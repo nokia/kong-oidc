@@ -1,7 +1,7 @@
 # What is Kong OIDC plugin
 
 **Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc) <br/>
-[![Coverage Status](https://coveralls.io/github/brudnyhenry/kong-oidc/badge.png?branch=master)](https://coveralls.io/github/brudnyhenry/kong-oidc?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/brudnyhenry/kong-oidc/badge.svg?branch=master)](https://coveralls.io/github/brudnyhenry/kong-oidc?branch=master)
 
 **kong-oidc** is a plugin for [Kong](https://github.com/Mashape/kong) implementing the
 [OpenID Connect](http://openid.net/specs/openid-connect-core-1_0.html) Relying Party (RP) functionality.
