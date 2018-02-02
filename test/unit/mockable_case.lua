@@ -8,6 +8,7 @@ function MockableCase:setUp()
   self.mocked_ngx = {
     DEBUG = "debug",
     ERR = "error",
+    HTTP_UNAUTHORIZED = 401,
     ctx = {},
     header = {},
     var = {request_uri = "/"},
