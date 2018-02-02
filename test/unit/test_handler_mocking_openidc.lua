@@ -100,6 +100,7 @@ function TestHandler:test_bearer_only_with_bad_token()
 
   lu.assertEquals(ngx.header["WWW-Authenticate"], 'Bearer realm="kong",error="validation failed"')
   lu.assertEquals(ngx.status, ngx.HTTP_UNAUTHORIZED)
+  lu.assertTrue(self:log_contains("introspect succeeded"))
 end
 
 lu.run()
