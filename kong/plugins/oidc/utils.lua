@@ -43,7 +43,7 @@ function M.get_options(config, ngx)
     client_secret = config.client_secret,
     discovery = config.discovery,
     introspection_endpoint = config.introspection_endpoint,
-    redirect_uri_path = M.get_redirect_uri_path(ngx),
+    redirect_uri_path = config.redirect_uri_path or M.get_redirect_uri_path(ngx),
     scope = config.scope,
     response_type = config.response_type,
     ssl_verify = config.ssl_verify,
