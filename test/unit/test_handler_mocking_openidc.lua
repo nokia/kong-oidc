@@ -39,7 +39,7 @@ function TestHandler:test_authenticate_ok_with_userinfo()
 
   self.handler:access({})
   lu.assertTrue(self:log_contains("calling authenticate"))
-  lu.assertEquals(ngx.ctx.authenticated_consumer.id, "sub")
+  lu.assertEquals(ngx.ctx.authenticated_credential.id, "sub")
 end
 
 function TestHandler:test_authenticate_nok_no_recovery()
