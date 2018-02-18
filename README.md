@@ -76,6 +76,10 @@ You also need to set the `KONG_CUSTOM_PLUGINS` environment variable
 | `config.scope` | oidc | false| OAuth2 Token scope. To use OIDC it has to contains the `oidc` scope |
 | `config.ssl_verify` | false | false | Enable SSL verification to OIDC Provider |
 | `config.session_secret` | | false | Additional parameter, which is used to encrypt the session cookie. Needs to be random |
+| `config.introspection_endpoint` | | false | Token introspection endpoint |
+| `config.bearer_only` | no | false | Only introspect tokens without redirecting |
+| `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
+
 
 ### Enabling
 

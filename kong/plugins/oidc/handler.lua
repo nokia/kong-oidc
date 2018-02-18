@@ -63,7 +63,7 @@ function introspect(oidcConfig)
     local res, err = require("resty.openidc").introspect(oidcConfig)
     if err then
       if oidcConfig.bearer_only == "yes" then
-        ngx.header["WWW-Authenticate"] = 'Bearer realm="kong",error="' .. err .. '"'
+        ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
         utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
       end
       return nil
