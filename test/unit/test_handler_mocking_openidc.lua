@@ -86,7 +86,7 @@ function TestHandler:test_bearer_only_with_good_token()
   end
   ngx.req.get_headers = function() return {Authorization = "Bearer xxx"} end
 
-  self.handler:access({introspection_endpoint = "x", bearer_only = "yes"})
+  self.handler:access({introspection_endpoint = "x", bearer_only = "yes", realm = "kong"})
   lu.assertTrue(self:log_contains("introspect succeeded"))
 end
 
@@ -96,7 +96,7 @@ function TestHandler:test_bearer_only_with_bad_token()
   end
   ngx.req.get_headers = function() return {Authorization = "Bearer xxx"} end
 
-  self.handler:access({introspection_endpoint = "x", bearer_only = "yes"})
+  self.handler:access({introspection_endpoint = "x", bearer_only = "yes", realm = "kong"})
 
   lu.assertEquals(ngx.header["WWW-Authenticate"], 'Bearer realm="kong",error="validation failed"')
   lu.assertEquals(ngx.status, ngx.HTTP_UNAUTHORIZED)
