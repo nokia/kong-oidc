@@ -44,6 +44,7 @@ function M.get_options(config, ngx)
     discovery = config.discovery,
     introspection_endpoint = config.introspection_endpoint,
     bearer_only = config.bearer_only,
+    realm = config.realm,
     redirect_uri_path = config.redirect_uri_path or M.get_redirect_uri_path(ngx),
     scope = config.scope,
     response_type = config.response_type,
