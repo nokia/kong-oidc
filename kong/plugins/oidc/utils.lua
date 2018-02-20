@@ -63,7 +63,7 @@ function M.injectUser(user)
   local tmp_user = user
   tmp_user.id = user.sub
   tmp_user.username = user.preferred_username
-  ngx.ctx.authenticated_consumer = tmp_user
+  ngx.ctx.authenticated_credential = tmp_user
 end
 
 function M.has_bearer_access_token()
