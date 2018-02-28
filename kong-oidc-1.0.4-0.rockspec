@@ -22,7 +22,7 @@ description = {
     license = "Apache 2.0"
 }
 dependencies = {
-    "lua-resty-openidc ~> 1.4.0-1"
+    "lua-resty-openidc ~> 1.5.3"
 }
 build = {
     type = "builtin",
