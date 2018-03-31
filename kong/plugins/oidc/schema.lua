@@ -7,6 +7,7 @@ return {
     introspection_endpoint = { type = "string", required = false },
     bearer_only = { type = "string", required = true, default = "no" },
     realm = { type = "string", required = true, default = "kong" },
+    logout_path = { type = "string", required = false, default = '/logout' },
     redirect_uri_path = { type = "string" },
     scope = { type = "string", required = true, default = "openid" },
     response_type = { type = "string", required = true, default = "code" },
