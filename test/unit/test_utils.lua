@@ -48,7 +48,7 @@ function TestUtils:testOptions()
   lu.assertEquals(opts.ssl_verify, "no")
   lu.assertEquals(opts.token_endpoint_auth_method, "client_secret_post")
   lu.assertEquals(opts.redirect_uri_path, "/path/")
-  lu.assertEquals(opts.logout_path = "/logout")
+  lu.assertEquals(opts.logout_path, "/logout")
 
   local expectedFilters = {
     "pattern1",
