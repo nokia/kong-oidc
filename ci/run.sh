@@ -13,6 +13,7 @@ luarocks install kong 0.11.2-0
 luarocks install lua-resty-openidc 1.5.3
 luarocks install lua-cjson
 luarocks install luaunit
+luarocks install luacov
 
 lua -lluacov test/unit/test_filter.lua -e -o TAP --failure
 lua -lluacov test/unit/test_filters_advanced.lua -e -o TAP --failure

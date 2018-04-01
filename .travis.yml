@@ -7,11 +7,9 @@ sudo: false
 env:
   - LUA_VERSION="5.1"
 
-install:
-  - luarocks install luacov-coveralls
-
 script:
   - source ci/run.sh
 
 after_success:
+  - luarocks install luacov-coveralls
   - luacov-coveralls
