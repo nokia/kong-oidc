@@ -6,6 +6,8 @@ sudo: false
 
 env:
   - LUA_VERSION="5.1"
+  - KONG_VERSION="0.11.2-0"
+  - LUA_RESTY_OPENIDC_VERSION="1.5.3"
 
 script:
   - source ci/run.sh

@@ -2,3 +2,5 @@
 *~
 \#*\#
 .\#*
+lua_install
+luacov.stats.out

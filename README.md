@@ -79,7 +79,7 @@ You also need to set the `KONG_CUSTOM_PLUGINS` environment variable
 | `config.introspection_endpoint` | | false | Token introspection endpoint |
 | `config.bearer_only` | no | false | Only introspect tokens without redirecting |
 | `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
-
+| `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
 
 ### Enabling
 
@@ -153,4 +153,15 @@ Accept-Encoding: gzip, deflate
 Accept-Language: pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4
 Cookie: session=KOn1am4mhQLKazlCA.....
 X-Userinfo: {"preferred_username":"alice","id":"60f65308-3510-40ca-83f0-e9c0151cc680","sub":"60f65308-3510-40ca-83f0-e9c0151cc680"}
+```
+
+
+## Development
+
+### Run CI locally
+
+To run the CI locally you can use the following command:
+
+```
+docker run --rm -it -v `pwd`:/app --workdir=/app python bash ci/run.sh
 ```
