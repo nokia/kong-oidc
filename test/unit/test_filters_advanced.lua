@@ -123,31 +123,4 @@ function TestFilter:testTildeAfterPrefix()
   lu.assertTrue(filter.shouldProcessRequest(config) )
 end
 
---zeppelin tests
-function TestFilter:testZeppelin()
-  ngx.var.uri = "/projects/10/zeppelin"
-  lu.assertFalse(filter.shouldProcessRequest(config))
-end
-
-function TestFilter:testSlashAfterZeppelin()
-  ngx.var.uri = "/projects/10/zeppelin/"
-  lu.assertFalse(filter.shouldProcessRequest(config))
-end
-
-function TestFilter:testQuestionMarkAfterZeppelin()
-  ngx.var.uri = "/projects/10/zeppelin?"
-  lu.assertFalse(filter.shouldProcessRequest(config))
-end
-
-function TestFilter:testExtraCharactersAfterZeppelin()
-  ngx.var.uri = "/projects/10/zeppelinextras"
-  lu.assertTrue(filter.shouldProcessRequest(config))
-end
-
-function TestFilter:testZeppelinNotAtStart()
-  ngx.var.uri = "/this/projects/10/zeppelin"
-  lu.assertTrue(filter.shouldProcessRequest(config))
-end
-
-
 lu.run()

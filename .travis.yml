@@ -5,30 +5,13 @@ language: python
 sudo: false
 
 env:
-  - LUA="lua=5.1"
-#  - LUA="lua=5.2"
-#  - LUA="lua=5.3"
-#  - LUA="luajit=2.0"
-#  - LUA="luajit=2.1"
-
-before_install:
-  - pip install hererocks
-  - hererocks lua_install -r^ --$LUA
-  - export PATH=$PATH:$PWD/lua_install/bin
-
-install:
-  - luarocks install kong 0.11.2-0
-  - luarocks install lua-resty-openidc 1.4.0-1
-  - luarocks install luaunit
-  - luarocks install luacov-coveralls
+  - LUA_VERSION="5.1" KONG_VERSION="0.13.0-0" LUA_RESTY_OPENIDC_VERSION="1.5.3"
+  - LUA_VERSION="5.1" KONG_VERSION="0.12.3-0" LUA_RESTY_OPENIDC_VERSION="1.5.3"
+  - LUA_VERSION="5.1" KONG_VERSION="0.11.2-0" LUA_RESTY_OPENIDC_VERSION="1.5.3"
 
 script:
-  - lua -lluacov test/unit/test_filter.lua -o TAP --failure
-  - lua -lluacov test/unit/test_filters_advanced.lua -o TAP --failure
-  - lua -lluacov test/unit/test_utils.lua -o TAP --failure
-  - lua -lluacov test/unit/test_handler_mocking_openidc.lua --failure
-  - lua -lluacov test/unit/test_introspect.lua -o TAP --failure
-  - lua -lluacov test/unit/test_utils_bearer_access_token.lua -o TAP --failure
+  - source ci/run.sh
 
 after_success:
+  - luarocks install luacov-coveralls
   - luacov-coveralls
