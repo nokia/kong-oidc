@@ -134,7 +134,7 @@ Server: kong/0.11.0
 
 ### Upstream API request
 
-The plugin adds a additional `X-Userinfo` header to the upstream request, which can be consumer by upstream server:
+The plugin adds a additional `X-Userinfo` header to the upstream request, which can be consumer by upstream server. It contains Userinfo base64 encoded:
 
 ```
 GET / HTTP/1.1
@@ -152,7 +152,7 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/a
 Accept-Encoding: gzip, deflate
 Accept-Language: pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4
 Cookie: session=KOn1am4mhQLKazlCA.....
-X-Userinfo: {"preferred_username":"alice","id":"60f65308-3510-40ca-83f0-e9c0151cc680","sub":"60f65308-3510-40ca-83f0-e9c0151cc680"}
+X-Userinfo: eyJnaXZlbl9uYW1lIjoixITEmMWaw5PFgcW7xbnEhiIsInN1YiI6ImM4NThiYzAxLTBiM2ItNDQzNy1hMGVlLWE1ZTY0ODkwMDE5ZCIsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIiwibmFtZSI6IsSExJjFmsOTxYHFu8W5xIYiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiJjODU4YmMwMS0wYjNiLTQ0MzctYTBlZS1hNWU2NDg5MDAxOWQifQ==
 ```
 
 
