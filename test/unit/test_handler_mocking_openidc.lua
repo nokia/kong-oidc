@@ -33,6 +33,10 @@ function TestHandler:test_authenticate_ok_with_userinfo()
   self.module_resty.openidc.authenticate = function(opts)
     return {user = {sub = "sub"}}, false
   end
+  ngx.encode_base64 = function(x)
+    return "eyJzdWIiOiJzdWIifQ=="
+  end
+
   ngx.req.set_header = function(h, v)
     lu.assertEquals(h, "X-Userinfo")
   end

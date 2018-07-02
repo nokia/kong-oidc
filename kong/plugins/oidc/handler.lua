@@ -40,7 +40,8 @@ function handle(oidcConfig)
     response = make_oidc(oidcConfig)
     if response and response.user then
       utils.injectUser(response.user)
-      ngx.req.set_header("X-Userinfo", cjson.encode(response.user))
+      local userinfo = cjson.encode(response.user)
+      ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
     end
   end
 end
