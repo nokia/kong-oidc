@@ -34,6 +34,7 @@ function TestUtils:testOptions()
     response_type = "code",
     ssl_verify = "no",
     token_endpoint_auth_method = "client_secret_post",
+    introspection_endpoint_auth_method = "client_secret_basic",
     filters = "pattern1,pattern2,pattern3",
     logout_path = "/logout",
     redirect_after_logout_uri = "/login"
