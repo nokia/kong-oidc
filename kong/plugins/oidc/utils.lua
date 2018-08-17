@@ -1,3 +1,5 @@
+local cjson = require("cjson")
+
 local M = {}
 
 local function parseFilters(csvFilters)
@@ -69,6 +71,8 @@ function M.injectUser(user)
   tmp_user.id = user.sub
   tmp_user.username = user.preferred_username
   ngx.ctx.authenticated_credential = tmp_user
+  local userinfo = cjson.encode(user)
+  ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
 end
 
 function M.has_bearer_access_token()

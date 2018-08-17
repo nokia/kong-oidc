@@ -36,14 +36,16 @@ function TestHandler:test_authenticate_ok_with_userinfo()
   ngx.encode_base64 = function(x)
     return "eyJzdWIiOiJzdWIifQ=="
   end
-
+  
+  local headers = {}
   ngx.req.set_header = function(h, v)
-    lu.assertEquals(h, "X-Userinfo")
+    headers[h] = v
   end
 
   self.handler:access({})
   lu.assertTrue(self:log_contains("calling authenticate"))
   lu.assertEquals(ngx.ctx.authenticated_credential.id, "sub")
+  lu.assertEquals(headers['X-Userinfo'], "eyJzdWIiOiJzdWIifQ==")
 end
 
 function TestHandler:test_authenticate_nok_no_recovery()
@@ -80,18 +82,38 @@ function TestHandler:test_introspect_ok_with_userinfo()
   end
   ngx.req.get_headers = function() return {Authorization = "Bearer xxx"} end
 
+  ngx.encode_base64 = function(x)
+    return "eyJzdWIiOiJzdWIifQ=="
+  end
+
+  local headers = {}
+  ngx.req.set_header = function(h, v)
+    headers[h] = v
+  end
+
   self.handler:access({introspection_endpoint = "x"})
   lu.assertTrue(self:log_contains("introspect succeeded"))
+  lu.assertEquals(headers['X-Userinfo'], "eyJzdWIiOiJzdWIifQ==")
 end
 
 function TestHandler:test_bearer_only_with_good_token()
   self.module_resty.openidc.introspect = function(opts)
-    return {}, false
+    return {sub = "sub"}, false
   end
   ngx.req.get_headers = function() return {Authorization = "Bearer xxx"} end
 
+  ngx.encode_base64 = function(x)
+    return "eyJzdWIiOiJzdWIifQ=="
+  end
+
+  local headers = {}
+  ngx.req.set_header = function(h, v)
+    headers[h] = v
+  end
+
   self.handler:access({introspection_endpoint = "x", bearer_only = "yes", realm = "kong"})
   lu.assertTrue(self:log_contains("introspect succeeded"))
+  lu.assertEquals(headers['X-Userinfo'], "eyJzdWIiOiJzdWIifQ==")
 end
 
 function TestHandler:test_bearer_only_with_bad_token()
