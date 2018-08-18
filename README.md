@@ -97,7 +97,7 @@ name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e
 
 To enable the plugin globally:
 ```
-POST /apis HTTP/1.1
+POST /plugins HTTP/1.1
 Host: localhost:8001
 Content-Type: application/x-www-form-urlencoded
 Cache-Control: no-cache
