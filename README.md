@@ -29,7 +29,7 @@ already posses acces token to go through kong. The actual token verification is 
 
 The diagram below shows the message exchange between the involved parties.
 
-![alt Kong OIDC flow](https://github.com/nokia/kong-oidc/raw/master/docs/kong_oidc_flow.png)
+![alt Kong OIDC flow](docs/kong_oidc_flow.png)
 
 The `X-Userinfo` header contains the payload from the Userinfo Endpoint
 
