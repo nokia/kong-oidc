@@ -45,6 +45,7 @@ function M.get_options(config, ngx)
     client_secret = config.client_secret,
     discovery = config.discovery,
     introspection_endpoint = config.introspection_endpoint,
+    timeout = config.timeout,
     introspection_endpoint_auth_method = config.introspection_endpoint_auth_method,
     bearer_only = config.bearer_only,
     realm = config.realm,
