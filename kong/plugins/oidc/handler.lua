@@ -36,8 +36,8 @@ function handle(oidcConfig)
 
   if response == nil then
     response = make_oidc(oidcConfig)
-    if response and response.user then
-      utils.injectUser(response.user)
+    if response and response then
+      utils.injectUser(response)
     end
   end
 end
