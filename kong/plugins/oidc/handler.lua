@@ -38,6 +38,8 @@ function handle(oidcConfig)
     response = make_oidc(oidcConfig)
     if response and response.user then
       utils.injectUser(response.user)
+      utils.injectAccessToken(response.access_token)
+      utils.injectIDToken(response.id_token)
     end
   end
 end

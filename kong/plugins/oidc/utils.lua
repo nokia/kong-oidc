@@ -67,6 +67,14 @@ function M.exit(httpStatusCode, message, ngxCode)
   ngx.exit(ngxCode)
 end
 
+function M.injectAccessToken(accessToken)
+  ngx.req.set_header("X-Access-Token", accessToken)
+end
+
+function M.injectIDToken(idToken)
+  ngx.req.set_header("X-ID-Token", idToken)
+end
+
 function M.injectUser(user)
   local tmp_user = user
   tmp_user.id = user.sub
