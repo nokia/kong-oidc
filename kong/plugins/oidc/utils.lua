@@ -72,7 +72,8 @@ function M.injectAccessToken(accessToken)
 end
 
 function M.injectIDToken(idToken)
-  ngx.req.set_header("X-ID-Token", idToken)
+  local tokenStr = cjson.encode(idToken)
+  ngx.req.set_header("X-ID-Token", ngx.encode_base64(tokenStr))
 end
 
 function M.injectUser(user)
