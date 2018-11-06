@@ -48,6 +48,70 @@ function TestHandler:test_authenticate_ok_with_userinfo()
   lu.assertEquals(headers['X-Userinfo'], "eyJzdWIiOiJzdWIifQ==")
 end
 
+function TestHandler:test_authenticate_ok_with_no_accesstoken()
+  self.module_resty.openidc.authenticate = function(opts)
+    return {}, true
+  end
+  
+  local headers = {}
+  ngx.req.set_header = function(h, v)
+    headers[h] = v
+  end
+
+  self.handler:access({})
+  lu.assertTrue(self:log_contains("calling authenticate"))
+  lu.assertNil(headers['X-Access-Token'])
+end
+
+function TestHandler:test_authenticate_ok_with_accesstoken()
+  self.module_resty.openidc.authenticate = function(opts)
+    return {access_token = "ACCESS_TOKEN"}, true
+  end
+  
+  local headers = {}
+  ngx.req.set_header = function(h, v)
+    headers[h] = v
+  end
+
+  self.handler:access({})
+  lu.assertTrue(self:log_contains("calling authenticate"))
+  lu.assertEquals(headers['X-Access-Token'], "ACCESS_TOKEN")
+end
+
+function TestHandler:test_authenticate_ok_with_no_idtoken()
+  self.module_resty.openidc.authenticate = function(opts)
+    return {}, true
+  end
+  
+  local headers = {}
+  ngx.req.set_header = function(h, v)
+    headers[h] = v
+  end
+
+  self.handler:access({})
+  lu.assertTrue(self:log_contains("calling authenticate"))
+  lu.assertNil(headers['X-ID-Token'])
+end
+
+function TestHandler:test_authenticate_ok_with_idtoken()
+  self.module_resty.openidc.authenticate = function(opts)
+    return {id_token = {sub = "sub"}}, true
+  end
+
+  ngx.encode_base64 = function(x)
+    return "eyJzdWIiOiJzdWIifQ=="
+  end
+  
+  local headers = {}
+  ngx.req.set_header = function(h, v)
+    headers[h] = v
+  end
+
+  self.handler:access({})
+  lu.assertTrue(self:log_contains("calling authenticate"))
+  lu.assertEquals(headers['X-ID-Token'], "eyJzdWIiOiJzdWIifQ==")
+end
+
 function TestHandler:test_authenticate_nok_no_recovery()
   self.module_resty.openidc.authenticate = function(opts)
     return {}, true
