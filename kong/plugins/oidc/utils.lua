@@ -74,6 +74,8 @@ function M.injectUser(user)
   ngx.ctx.authenticated_credential = tmp_user
   local userinfo = cjson.encode(user)
   ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
+  ngx.req.set_header("X-Username", user.preferred_username)
+  ngx.req.set_header("X-Userid", user.sub)
 end
 
 function M.has_bearer_access_token()
