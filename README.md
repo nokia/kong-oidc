@@ -162,7 +162,7 @@ X-Userinfo: eyJnaXZlbl9uYW1lIjoixITEmMWaw5PFgcW7xbnEhiIsInN1YiI6ImM4NThiYzAxLTBi
 
 ### Running Unit Tests
 
-To run unit tests you can run the following command:
+To run unit tests, run the following command:
 
 ```
 ./bin/run-unit-tests.sh
@@ -172,7 +172,7 @@ This may take a while for the first run, as the docker image will need to be bui
 
 ### Building the Integration Test Environment
 
-To build the integration environment (Kong w/ the oidc plugin enabled, and Keycloak as the OIDC Provider) run the following command:
+To build the integration environment (Kong with the oidc plugin enabled, and Keycloak as the OIDC Provider), run the following command:
 
 ```
 ./bin/build-env.sh
