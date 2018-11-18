@@ -172,9 +172,10 @@ This may take a while for the first run, as the docker image will need to be bui
 
 ### Building the Integration Test Environment
 
-To build the integration environment (Kong with the oidc plugin enabled, and Keycloak as the OIDC Provider), run the following command:
+To build the integration environment (Kong with the oidc plugin enabled, and Keycloak as the OIDC Provider), you will first need to find your computer's IP, and assign that to the environment variable `IP`. Finally, you will run the `./bin/build-env.sh` command. Here's an example:
 
 ```
+export IP=192.168.0.1
 ./bin/build-env.sh
 ```
 
