@@ -1,0 +1,42 @@
+version: '3.4'
+
+services:
+  kong-db:
+    image: postgres${KONG_DB_TAG}
+    ports:
+      - ${KONG_DB_PORT}:5432
+    environment:
+      POSTGRES_USER:     ${KONG_DB_USER}
+      POSTGRES_PASSWORD: ${KONG_DB_PW}
+      POSTGRES_DB:       ${KONG_DB_NAME}
+
+  keycloak:
+    image: jboss/keycloak${KEYCLOAK_TAG}
+    ports:
+      - ${KEYCLOAK_PORT}:8080
+    environment:
+      KEYCLOAK_USER:     ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PW}
+
+  kong:
+    image: nokia/kong-oidc${KONG_TAG}
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+    environment:
+      KONG_DATABASE:    postgres
+      KONG_PG_HOST:     kong-db
+      KONG_PG_DATABASE: ${KONG_DB_NAME}
+      KONG_PG_USER:     ${KONG_DB_USER}
+      KONG_PG_PASSWORD: ${KONG_DB_PW}
+      KONG_ADMIN_LISTEN: 0.0.0.0:${KONG_HTTP_ADMIN_PORT}
+      KONG_PROXY_LISTEN: 0.0.0.0:${KONG_HTTP_PROXY_PORT}
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG:  /dev/stderr
+      KONG_ADMIN_ERROR_LOG:  /dev/stderr
+      KONG_PLUGINS: oidc
+    depends_on:
+      - kong-db
