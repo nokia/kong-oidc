@@ -1,3 +1,4 @@
+#!/bin/bash
 . .env
 
 (set -ex

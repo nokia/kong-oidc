@@ -1,3 +1,4 @@
+#!/bin/bash
 . .env
 . ${INTEGRATION_PATH}/_network_functions
 

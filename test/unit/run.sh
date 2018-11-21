@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 # Run all test_*.lua files in test/unit
