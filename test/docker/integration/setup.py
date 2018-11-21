@@ -21,7 +21,7 @@ Config = namedtuple("Config", [
 
 def validate_ip_set():
     if local_ip == "":
-        raise Exception("IP environment variable not set. See README.md in test directory for further instructions.")
+        raise Exception("IP environment variable not set. See README.md for further instructions.")
 
 """
 Attempt to pull in environment variables from .env file
