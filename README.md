@@ -160,10 +160,27 @@ X-Userinfo: eyJnaXZlbl9uYW1lIjoixITEmMWaw5PFgcW7xbnEhiIsInN1YiI6ImM4NThiYzAxLTBi
 
 ## Development
 
-### Run CI locally
+### Running Unit Tests
 
-To run the CI locally you can use the following command:
+To run unit tests, run the following command:
 
 ```
-docker run --rm -it -v `pwd`:/app --workdir=/app python bash ci/run.sh
+./bin/run-unit-tests.sh
+```
+
+This may take a while for the first run, as the docker image will need to be built, but subsequent runs will be quick.
+
+### Building the Integration Test Environment
+
+To build the integration environment (Kong with the oidc plugin enabled, and Keycloak as the OIDC Provider), you will first need to find your computer's IP, and assign that to the environment variable `IP`. Finally, you will run the `./bin/build-env.sh` command. Here's an example:
+
+```
+export IP=192.168.0.1
+./bin/build-env.sh
+```
+
+To tear the environment down:
+
+```
+./bin/teardown-env.sh
 ```

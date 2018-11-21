@@ -1,0 +1,48 @@
+# Determine if a listener is active (useful for non-http endpoints)
+function _listener_ready() {
+    local endpoint=$1
+    if ! shift 1; then echo "ERROR: ${FUNCNAME[0]}() Missing argument"; return 1; fi
+    curl -sf --max-time 1 "gopher://${endpoint}"
+
+    # '28 Operation timeout' means that curl WAS able to connect
+    [[ $? == 28 ]]
+}
+
+# Sleep until listener becomes active
+function _wait_for_listener() {
+    local endpoint=$1
+    if ! shift 1; then echo "ERROR: ${FUNCNAME[0]}() Missing argument"; return 1; fi
+
+    echo -n "Waiting for ${endpoint} "
+    local -i sec=0
+    while ! _listener_ready ${endpoint}; do
+        echo -n "."
+        sleep 1
+        sec+=1
+    done
+    echo "(${sec}s)"
+}
+
+function _endpoint_ready() {
+    local url=$1
+    if ! shift 1; then echo "ERROR: ${FUNCNAME[0]}() Missing argument"; return 1; fi
+
+    curl -sf --max-time 1 "${url}" > /dev/null 2>&1
+}
+
+# Sleep until listener becomes active
+# Usage: _wait_for_endpoint <uri> [<timeout>]
+function _wait_for_endpoint() {
+    local url=$1
+    if ! shift 1; then echo "ERROR: ${FUNCNAME[0]}() Missing argument"; return 1; fi
+    local -i timeout=$2
+
+    local -i sec=0
+    echo -n "Waiting for ${url} "
+    while ! _endpoint_ready ${url}; do
+        echo -n "."
+        sleep 1
+        sec+=1
+    done
+    echo "(${sec}s)"
+}
