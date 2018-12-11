@@ -18,6 +18,10 @@ return {
     recovery_page_path = { type = "string" },
     logout_path = { type = "string", required = false, default = '/logout' },
     redirect_after_logout_uri = { type = "string", required = false, default = '/' },
-    filters = { type = "string" }
+    filters = { type = "string" },
+    user_service_endpoint = { type = "string" },
+    auth_header_blacklist = { type = "array" },
+    downstream_claims = { type = "array" },
+    consumer_id_claim = { type = "string", required = true, default = "sub" }
   }
 }

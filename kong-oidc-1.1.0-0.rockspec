@@ -31,6 +31,8 @@ build = {
     ["kong.plugins.oidc.handler"] = "kong/plugins/oidc/handler.lua",
     ["kong.plugins.oidc.schema"] = "kong/plugins/oidc/schema.lua",
     ["kong.plugins.oidc.session"] = "kong/plugins/oidc/session.lua",
-    ["kong.plugins.oidc.utils"] = "kong/plugins/oidc/utils.lua"
+    ["kong.plugins.oidc.utils"] = "kong/plugins/oidc/utils.lua",
+    ["kong.plugins.oidc.user-service"] = "kong/plugins/oidc/user-service.lua",
+    ["kong.plugins.oidc.json"] = "kong/plugins/oidc/json.lua"
     }
 }
