@@ -1,4 +1,5 @@
-FROM kong:0.14.1-centos
+ARG KONG_BASE_TAG
+FROM kong${KONG_BASE_TAG}
 
 ENV LUA_PATH /usr/local/share/lua/5.1/?.lua;/usr/local/kong-oidc/?.lua
 # For lua-cjson
