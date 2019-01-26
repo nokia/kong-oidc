@@ -11,14 +11,14 @@
   (set -x
     # Tear down environment if it is running
     docker-compose -f ${INTEGRATION_PATH}/docker-compose.yml down 
-    docker build -t nokia/kong-oidc -f ${INTEGRATION_PATH}/Dockerfile .
+    docker build --build-arg KONG_BASE_TAG=${KONG_BASE_TAG} -t nokia/kong-oidc -f ${INTEGRATION_PATH}/Dockerfile .
     docker-compose -f ${INTEGRATION_PATH}/docker-compose.yml up -d kong-db
   )
 
   _wait_for_listener localhost:${KONG_DB_PORT}
 
   (set -x
-    docker-compose -f ${INTEGRATION_PATH}/docker-compose.yml run --rm kong kong migrations up
+    docker-compose -f ${INTEGRATION_PATH}/docker-compose.yml run --rm kong kong migrations bootstrap
     docker-compose -f ${INTEGRATION_PATH}/docker-compose.yml up -d
   )
 
