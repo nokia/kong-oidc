@@ -23,7 +23,10 @@ function MockableCase:setUp()
     end,
     say = function(...) end,
     exit = function(...) end,
-    redirect = function(...) end
+    redirect = function(...) end,
+    config = {
+      subsystem = "http"
+    }
   }
   self.ngx = _G.ngx
   _G.ngx = self.mocked_ngx
