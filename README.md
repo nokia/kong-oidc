@@ -73,7 +73,7 @@ You also need to set the `KONG_CUSTOM_PLUGINS` environment variable
 | `config.client_id` || true | OIDC Client ID |
 | `config.client_secret` || true | OIDC Client secret |
 | `config.discovery` | https://.well-known/openid-configuration | false | OIDC Discovery Endpoint (`/.well-known/openid-configuration`) |
-| `config.scope` | oidc | false| OAuth2 Token scope. To use OIDC it has to contains the `oidc` scope |
+| `config.scope` | openid | false| OAuth2 Token scope. To use OIDC it has to contains the `openid` scope |
 | `config.ssl_verify` | false | false | Enable SSL verification to OIDC Provider |
 | `config.session_secret` | | false | Additional parameter, which is used to encrypt the session cookie. Needs to be random |
 | `config.introspection_endpoint` | | false | Token introspection endpoint |
