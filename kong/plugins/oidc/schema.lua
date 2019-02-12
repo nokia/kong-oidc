@@ -1,6 +1,7 @@
 return {
   no_consumer = true,
   fields = {
+    anonymous = { type = "string", uuid = true, legacy = true },
     client_id = { type = "string", required = true },
     client_secret = { type = "string", required = true },
     discovery = { type = "string", required = true, default = "https://.well-known/openid-configuration" },
