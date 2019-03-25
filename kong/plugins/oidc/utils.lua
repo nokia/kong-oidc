@@ -40,7 +40,7 @@ function M.get_redirect_uri_path(ngx)
 end
 
 function M.get_options(config, ngx)
-  return {
+  local options = {
     client_id = config.client_id,
     client_secret = config.client_secret,
     discovery = config.discovery,
@@ -59,6 +59,12 @@ function M.get_options(config, ngx)
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
   }
+
+  if not config.redirect_uri then
+    options["redirect_uri_path"] = config.redirect_uri_path or M.get_redirect_uri_path(ngx)
+  end
+
+  return options
 end
 
 function M.exit(httpStatusCode, message, ngxCode)
