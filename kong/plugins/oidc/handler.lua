@@ -6,6 +6,31 @@ local session = require("kong.plugins.oidc.session")
 
 OidcHandler.PRIORITY = 1000
 
+local anonymousResponse = {
+  azp = "anonymous",
+    iat = 1554936123,
+    iss = "https://login.anonymous.com/auth/realms/anonymous",
+    email = "anonymous@anonymous.com",
+    family_name = "anonymous",
+    sub = "anonymous",
+    id = "anonymous",
+    auth_time = 1554935312,
+    active = true,
+    username = "anonymous",
+    nbf = 0,
+    email_verified = false,
+    scope = "openid profile email",
+    aud = "account",
+    session_state = "10443ff5-a5a3-43d9-b383-2ed3bba4706f",
+    acr = "0",
+    client_id = "anonymous",
+    given_name = "anonymous",
+    exp = 4554936423,
+    preferred_username = "anonymous",
+    jti = "abccd87b-bcb0-4286-9e2e-7aeb7501c1cb",
+    name = "Anonymous Anonymous",
+    typ = "Bearer"
+}
 
 function OidcHandler:new()
   OidcHandler.super.new(self, "oidc")
@@ -64,14 +89,21 @@ function make_oidc(oidcConfig)
 end
 
 function introspect(oidcConfig)
-  if utils.has_bearer_access_token() or oidcConfig.bearer_only == "yes" then
+  if oidcConfig.pass_as_anonymous == "yes" or utils.has_bearer_access_token() or oidcConfig.bearer_only == "yes"  then
     local res, err = require("resty.openidc").introspect(oidcConfig)
     if err then
-      if oidcConfig.bearer_only == "yes" then
-        ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
-        utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
+
+      if oidcConfig.pass_as_anonymous == "no" then
+        if oidcConfig.bearer_only == "yes" then
+          ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
+          utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
+        end
+        return nil
+      else
+      --  lets send anonymous user info upstream
+        ngx.log(ngx.DEBUG, "anonymous response returned because pass_as_anonymous == \"yes\"" )
+        return anonymousResponse
       end
-      return nil
     end
     ngx.log(ngx.DEBUG, "OidcHandler introspect succeeded, requested path: " .. ngx.var.request_uri)
     return res
