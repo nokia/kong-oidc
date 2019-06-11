@@ -41,7 +41,11 @@ function handle(oidcConfig)
         utils.injectUser(response.user)
       end
       if (response.access_token) then
-        utils.injectAccessToken(response.access_token)
+        if (oidcConfig.forward_bearer_access_token == "yes") then
+          utils.injectBearerAccessToken(response.access_token)
+        else 
+          utils.injectAccessToken(response.access_token)
+        end
       end
       if (response.id_token) then
         utils.injectIDToken(response.id_token)
