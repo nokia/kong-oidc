@@ -58,6 +58,7 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
+    forward_bearer_access_token = config.forward_bearer_access_token,
   }
 end
 
@@ -69,6 +70,14 @@ end
 
 function M.injectAccessToken(accessToken)
   ngx.req.set_header("X-Access-Token", accessToken)
+end
+
+function M.injectBearerAccessToken(accessToken)
+  local b = "Bearer " .. accessToken
+  --[[
+  ngx.log(ngx.DEBUG, "utils.injectBearerAccessToken(): add Authorization: " .. b)
+  --]]
+  ngx.req.set_header("Authorization", b)
 end
 
 function M.injectIDToken(idToken)
