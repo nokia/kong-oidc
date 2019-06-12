@@ -59,9 +59,9 @@ If you're using `luarocks` execute the following:
 
      luarocks install kong-oidc
 
-You also need to set the `KONG_CUSTOM_PLUGINS` environment variable
+You also need to set the `KONG_PLUGINS` environment variable
 
-     export KONG_CUSTOM_PLUGINS=oidc
+     export KONG_PLUGINS=oidc
      
 ## Usage
 
