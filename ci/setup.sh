@@ -3,7 +3,7 @@ set -e
 
 export LUA_VERSION=${LUA_VERSION:-5.1}
 export KONG_VERSION=${KONG_VERSION:-0.13.1-0}
-export LUA_RESTY_OPENIDC_VERSION=${LUA_RESTY_OPENIDC_VERSION:-1.6.0}
+export LUA_RESTY_OPENIDC_VERSION=${LUA_RESTY_OPENIDC_VERSION:-1.6.1-1}
 
 pip install hererocks
 hererocks lua_install -r^ --lua=${LUA_VERSION}
