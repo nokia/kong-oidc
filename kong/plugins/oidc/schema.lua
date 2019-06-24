@@ -18,6 +18,7 @@ return {
     recovery_page_path = { type = "string" },
     logout_path = { type = "string", required = false, default = '/logout' },
     redirect_after_logout_uri = { type = "string", required = false, default = '/' },
+    pass_as_anonymous = { type = "string", required = false, default = "no" },
     filters = { type = "string" }
   }
 }
