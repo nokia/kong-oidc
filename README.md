@@ -96,6 +96,8 @@ Cache-Control: no-cache
 name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e9-9ba5e7382fa0&config.discovery=https%3A%2F%2F<oidc_provider>%2F.well-known%2Fopenid-configuration
 ```
 
+If you're using Kong 1.0.x or later, `/apis` endpoint has changed to `/<something>/<something_id>/plugins`. You can specify `routes` or `services` or `consumers` as a `something`. For more, see [Kong Admin's API document](https://docs.konghq.com/1.0.x/admin-api/#add-plugin).
+
 To enable the plugin globally:
 ```
 POST /plugins HTTP/1.1
