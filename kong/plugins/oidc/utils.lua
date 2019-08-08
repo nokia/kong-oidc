@@ -58,6 +58,7 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
+    groups_claim = config.groups_claim,
   }
 end
 
@@ -83,6 +84,12 @@ function M.injectUser(user)
   ngx.ctx.authenticated_credential = tmp_user
   local userinfo = cjson.encode(user)
   ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
+end
+
+function M.injectGroups(user, claim)
+  if user[claim] ~= nil then
+    ngx.ctx.authenticated_groups = user[claim]
+  end
 end
 
 function M.has_bearer_access_token()

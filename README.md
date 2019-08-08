@@ -45,6 +45,10 @@ ngx.ctx.authenticated_consumer = {
 }
 ```
 
+The plugin will try to retrieve the user's groups from a field in the token (default `groups`)
+and set `ngx.ctx.authenticated_groups` so that Kong authorization plugins can make decisions
+based on the user's group membership.
+
 
 ## Dependencies
 
@@ -82,6 +86,7 @@ You also need to set the `KONG_PLUGINS` environment variable
 | `config.bearer_only` | no | false | Only introspect tokens without redirecting |
 | `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
 | `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
+| `config.groups_claim` | groups | false | Name of the claim in the token to get groups from |
 
 ### Enabling
 

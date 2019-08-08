@@ -39,6 +39,7 @@ function handle(oidcConfig)
     if response then
       if (response.user) then
         utils.injectUser(response.user)
+        utils.injectGroups(response.user, oidcConfig.groups_claim)
       end
       if (response.access_token) then
         utils.injectAccessToken(response.access_token)
