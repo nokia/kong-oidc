@@ -40,6 +40,14 @@ function M.get_redirect_uri_path(ngx)
 end
 
 function M.get_options(config, ngx)
+  local proxy_opts
+  if config.http_proxy or config.https_proxy then
+    proxy_opts = {
+      http_proxy = config.http_proxy,
+      https_proxy = config.https_proxy,
+    }
+  end
+
   return {
     client_id = config.client_id,
     client_secret = config.client_secret,
@@ -58,6 +66,7 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
+    proxy_opts = proxy_opts,
   }
 end
 
