@@ -1,8 +1,8 @@
 package = "kong-oidc"
-version = "1.1.0-0"
+version = "1.1.1-0"
 source = {
-    url = "git://github.com/nokia/kong-oidc",
-    tag = "v1.1.0",
+    url = "git://github.com/colonynetworks/kong-oidc",
+    tag = "v1.1.1",
     dir = "kong-oidc"
 }
 description = {
@@ -18,7 +18,7 @@ description = {
 
         It can be used as a reverse proxy terminating OAuth/OpenID Connect in front of an origin server so that the origin server/services can be protected with the relevant standards without implementing those on the server itself.
     ]],
-    homepage = "https://github.com/nokia/kong-oidc",
+    homepage = "https://github.com/colonynetworks/kong-oidc",
     license = "Apache 2.0"
 }
 dependencies = {
