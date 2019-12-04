@@ -162,9 +162,9 @@ function introspect(oidcConfig)
           set_consumer(consumer, nil, nil)
 
         else
-          return kong.response.exit(err.status, err.message, err.headers)
+          ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
+          utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
         end
-
       end
       return nil
     end
