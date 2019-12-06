@@ -1,4 +1,4 @@
-local BasePlugin = require "kong.plugins.base_plugin"
+0local BasePlugin = require "kong.plugins.base_plugin"
 local OidcHandler = BasePlugin:extend()
 local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
@@ -162,8 +162,7 @@ function introspect(oidcConfig)
           set_consumer(consumer, nil, nil)
 
         else
-          ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
-          utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
+          return kong.response.exit(err.status, err.message, err.headers)
         end
       end
       return nil
