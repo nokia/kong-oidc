@@ -1,8 +1,8 @@
-0local BasePlugin = require "kong.plugins.base_plugin"
+local BasePlugin = require "kong.plugins.base_plugin"
 local OidcHandler = BasePlugin:extend()
-local utils = require("kong.plugins.oidc.utils")
-local filter = require("kong.plugins.oidc.filter")
-local session = require("kong.plugins.oidc.session")
+local utils = require "kong.plugins.oidc.utils"
+local filter = require "kong.plugins.oidc.filter"
+local session = require "kong.plugins.oidc.session"
 
 local constants = require "kong.constants"
 
@@ -128,9 +128,10 @@ function make_oidc(oidcConfig)
       -- get anonymous user
       local consumer_cache_key = kong.db.consumers:cache_key(oidcConfig.anonymous)
       local consumer, err      = kong.cache:get(consumer_cache_key, nil,
-                                                load_consumer_into_memory,
+                                                kong.client.load_consumer,
                                                 oidcConfig.anonymous, true)
       if err then
+        kong.log.err("failed to load anonymous consumer:", err)
         return internal_server_error(err)
       end
 
@@ -153,9 +154,10 @@ function introspect(oidcConfig)
           -- get anonymous user
           local consumer_cache_key = kong.db.consumers:cache_key(oidcConfig.anonymous)
           local consumer, err      = kong.cache:get(consumer_cache_key, nil,
-                                                    load_consumer_into_memory,
+                                                    kong.client.load_consumer,
                                                     oidcConfig.anonymous, true)
           if err then
+            kong.log.err("failed to load anonymous consumer:", err)
             return internal_server_error(err)
           end
 
