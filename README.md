@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/nokia/kong-oidc](https://badges.gitter.im/nokia/kong-oidc.svg)](https://gitter.im/nokia/kong-oidc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc) 
+**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc)
 [![Coverage Status](https://coveralls.io/repos/github/nokia/kong-oidc/badge.svg?branch=master)](https://coveralls.io/github/nokia/kong-oidc?branch=master) <br/>
 
 **kong-oidc** is a plugin for [Kong](https://github.com/Mashape/kong) implementing the
@@ -62,7 +62,7 @@ If you're using `luarocks` execute the following:
 You also need to set the `KONG_PLUGINS` environment variable
 
      export KONG_PLUGINS=oidc
-     
+
 ## Usage
 
 ### Parameters
@@ -82,6 +82,10 @@ You also need to set the `KONG_PLUGINS` environment variable
 | `config.bearer_only` | no | false | Only introspect tokens without redirecting |
 | `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
 | `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
+| `config.http_proxy` || false | HTTP proxy URL (e.g. http://proxy.local:8888/) |
+| `config.https_proxy` || false | HTTPS proxy URL (e.g. http://proxy.local:8888/) |
+| `config.http_proxy_authorization` || false | `Proxy-Authorization` header value to be used with `config.http_proxy` (e.g. `Basic ZGVtbzp0ZXN0`) |
+| `config.https_proxy_authorization` || false | `Proxy-Authorization` header value to be used with `config.https_proxy` (e.g. `Basic ZGVtbzp0ZXN0`) |
 
 ### Enabling
 
