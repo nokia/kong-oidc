@@ -84,6 +84,8 @@ You also need to set the `KONG_PLUGINS` environment variable
 | `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
 | `config.http_proxy` || false | HTTP proxy URL (e.g. http://proxy.local:8888/) |
 | `config.https_proxy` || false | HTTPS proxy URL (e.g. http://proxy.local:8888/) |
+| `config.http_proxy_authorization` || false | `Proxy-Authorization` header value to be used with `config.http_proxy` (e.g. `Basic ZGVtbzp0ZXN0`) |
+| `config.https_proxy_authorization` || false | `Proxy-Authorization` header value to be used with `config.https_proxy` (e.g. `Basic ZGVtbzp0ZXN0`) |
 
 ### Enabling
 

@@ -45,6 +45,8 @@ function M.get_options(config, ngx)
     proxy_opts = {
       http_proxy = config.http_proxy,
       https_proxy = config.https_proxy,
+      http_proxy_authorization = config.http_proxy_authorization,
+      https_proxy_authorization = config.https_proxy_authorization,
     }
   end
 

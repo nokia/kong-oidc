@@ -21,5 +21,7 @@ return {
     filters = { type = "string" },
     http_proxy = { type = "string", required = false },
     https_proxy = { type = "string", required = false },
+    http_proxy_authorization  = { type = "string", required = false },
+    https_proxy_authorization = { type = "string", required = false },
   }
 }
