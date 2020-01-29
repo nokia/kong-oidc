@@ -86,19 +86,21 @@ function M.injectUser(user, oidcConfig)
   local userinfo = cjson.encode(user)
   ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
 
-  for i, value in ipairs(oidcConfig.mappings) do
-    local f, from, to
-    f = string.gmatch(value, "[^:]+")
-    from = f()
-    to = f()
-    if from ~= nil and to ~= nil then
-      if user[from] ~= nil then
-        ngx.req.set_header(to, user[from])
+  if oidcConfig.mappings ~= nil then
+    for i, value in ipairs(oidcConfig.mappings) do
+      local f, from, to
+      f = string.gmatch(value, "[^:]+")
+      from = f()
+      to = f()
+      if from ~= nil and to ~= nil then
+        if user[from] ~= nil then
+          ngx.req.set_header(to, user[from])
+        else
+          ngx.log(ngx.WARN, "Key '" .. from .. "' not present on token")
+        end
       else
-        ngx.log(ngx.WARN, "Key '" .. from .. "' not present on token")
+        ngx.log(ngx.ERR, "Ignoring incorrect configuration: " .. value)
       end
-    else
-      ngx.log(ngx.ERR, "Ignoring incorrect configuration: " .. value)
     end
   end
 end
