@@ -53,11 +53,13 @@ function M.get_options(config, ngx)
     scope = config.scope,
     response_type = config.response_type,
     ssl_verify = config.ssl_verify,
+    use_jwks = config.use_jwks,
     token_endpoint_auth_method = config.token_endpoint_auth_method,
     recovery_page_path = config.recovery_page_path,
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
+    mappings = config.mappings,
   }
 end
 
@@ -76,13 +78,31 @@ function M.injectIDToken(idToken)
   ngx.req.set_header("X-ID-Token", ngx.encode_base64(tokenStr))
 end
 
-function M.injectUser(user)
+function M.injectUser(user, oidcConfig)
   local tmp_user = user
   tmp_user.id = user.sub
   tmp_user.username = user.preferred_username
   ngx.ctx.authenticated_credential = tmp_user
   local userinfo = cjson.encode(user)
   ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
+
+  if oidcConfig.mappings ~= nil then
+    for i, value in ipairs(oidcConfig.mappings) do
+      local f, from, to
+      f = string.gmatch(value, "[^:]+")
+      from = f()
+      to = f()
+      if from ~= nil and to ~= nil then
+        if user[from] ~= nil then
+          ngx.req.set_header(to, user[from])
+        else
+          ngx.log(ngx.WARN, "Key '" .. from .. "' not present on token")
+        end
+      else
+        ngx.log(ngx.ERR, "Ignoring incorrect configuration: " .. value)
+      end
+    end
+  end
 end
 
 function M.has_bearer_access_token()

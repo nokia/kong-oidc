@@ -30,7 +30,7 @@ function handle(oidcConfig)
   if oidcConfig.introspection_endpoint then
     response = introspect(oidcConfig)
     if response then
-      utils.injectUser(response)
+      utils.injectUser(response, oidcConfig)
     end
   end
 
@@ -38,7 +38,7 @@ function handle(oidcConfig)
     response = make_oidc(oidcConfig)
     if response then
       if (response.user) then
-        utils.injectUser(response.user)
+        utils.injectUser(response.user, oidcConfig)
       end
       if (response.access_token) then
         utils.injectAccessToken(response.access_token)
@@ -65,7 +65,12 @@ end
 
 function introspect(oidcConfig)
   if utils.has_bearer_access_token() or oidcConfig.bearer_only == "yes" then
-    local res, err = require("resty.openidc").introspect(oidcConfig)
+    local res, err
+    if oidcConfig.use_jwks == "yes" then
+      res, err = require("resty.openidc").bearer_jwt_verify(oidcConfig)
+    else
+      res, err = require("resty.openidc").introspect(oidcConfig)
+    end
     if err then
       if oidcConfig.bearer_only == "yes" then
         ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
