@@ -6,8 +6,8 @@ local session = require("kong.plugins.oidc.session")
 
 OidcHandler.PRIORITY = 1000
 
-ngx.shared["discovery"]={}
-ngx.shared["introspection"]={}
+ngx.shared={discovery={}}
+ngx.shared={introspection={}}
 
 
 function OidcHandler:new()
