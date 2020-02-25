@@ -18,6 +18,11 @@ services:
       KEYCLOAK_USER:     ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PW}
 
+  kong-session-store:
+    image: redis
+    ports:
+      - 6379:6379
+
   kong:
     image: nokia/kong-oidc${KONG_TAG}
     ports:
@@ -26,6 +31,7 @@ services:
       - 8001:8001
       - 8444:8444
     environment:
+      KONG_NGINX_PROXY_INCLUDE: /usr/local/kong-oidc/test/docker/integration/nginx-redis.kong.conf
       KONG_DATABASE:    postgres
       KONG_PG_HOST:     kong-db
       KONG_PG_DATABASE: ${KONG_DB_NAME}
@@ -40,3 +46,4 @@ services:
       KONG_PLUGINS: oidc
     depends_on:
       - kong-db
+      - kong-session-store

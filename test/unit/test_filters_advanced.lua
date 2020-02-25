@@ -18,7 +18,13 @@ end
 
 
 local config =  {
-  filters = {  "^/auth$","^/auth[^%w_%-%.~]","^/arc$","^/arc[^%w_%-%.~]","^/projects/%d+/zeppelin[^%w_%-%.~]","^/projects/%d+/zeppelin$"}
+  filters = { 
+    "^/auth$",
+    "^/auth[^%w_%-%.~]",
+    "^/arc$","^/arc[^%w_%-%.~]",
+    "^/projects/%d+/zeppelin[^%w_%-%.~]",
+    "^/projects/%d+/zeppelin$"
+  }
 }
 
 function TestFilter:testIgnoreRequestWhenUriIsAuth()
