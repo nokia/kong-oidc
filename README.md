@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/nokia/kong-oidc](https://badges.gitter.im/nokia/kong-oidc.svg)](https://gitter.im/nokia/kong-oidc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc) 
+**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc)
 [![Coverage Status](https://coveralls.io/repos/github/nokia/kong-oidc/badge.svg?branch=master)](https://coveralls.io/github/nokia/kong-oidc?branch=master) <br/>
 
 **kong-oidc** is a plugin for [Kong](https://github.com/Mashape/kong) implementing the
@@ -15,6 +15,8 @@ and the Basic Client Profile (i.e. the Authorization Code flow).
 It maintains sessions for authenticated users by leveraging `lua-resty-openidc` thus offering
 a configurable choice between storing the session state in a client-side browser cookie or use
 in of the server-side storage mechanisms `shared-memory|memcache|redis`.
+
+> **Note:** at the moment, there is an issue using memcached/redis, probably due to session locking: the sessions freeze. Help to debug this is appreciated. I am currently used shared memory to store sessions.
 
 It supports server-wide caching of resolved Discovery documents and validated Access Tokens.
 
@@ -50,7 +52,7 @@ ngx.ctx.authenticated_consumer = {
 
 **kong-oidc** depends on the following package:
 
-- [`lua-resty-openidc`](https://github.com/pingidentity/lua-resty-openidc/)
+- [`lua-resty-openidc`](https://github.com/zmartzone/lua-resty-openidc/)
 
 ## Installation
 
@@ -58,43 +60,39 @@ If you're using `luarocks` execute the following:
 
      luarocks install kong-oidc
 
-[Kong < 0.14] You also need to set the `KONG_CUSTOM_PLUGINS` environment variable
-
-     export KONG_CUSTOM_PLUGINS=oidc
-
 [Kong >= 0.14] Since `KONG_CUSTOM_PLUGINS` has been removed, you also need to set the `KONG_PLUGINS` environment variable to include besides the bundled ones, oidc
 
      export KONG_PLUGINS=bundled,oidc
-     
+
 ## Usage
 
 ### Parameters
 
-| Parameter | Default  | Required | description |
-| --- | --- | --- | --- |
-| `name` || true | plugin name, has to be `oidc` |
-| `config.client_id` || true | OIDC Client ID |
-| `config.client_secret` || true | OIDC Client secret |
-| `config.discovery` | https://.well-known/openid-configuration | false | OIDC Discovery Endpoint (`/.well-known/openid-configuration`) |
-| `config.scope` | openid | false| OAuth2 Token scope. To use OIDC it has to contains the `openid` scope |
-| `config.ssl_verify` | false | false | Enable SSL verification to OIDC Provider |
-| `config.session_secret` | | false | Additional parameter, which is used to encrypt the session cookie. Needs to be random |
-| `config.introspection_endpoint` | | false | Token introspection endpoint |
-| `config.timeout` | | false | OIDC endpoint calls timeout |
-| `config.introspection_endpoint_auth_method` | client_secret_basic | false | Token introspection authentication method. `resty-openidc` supports `client_secret_(basic\|post)` |
-| `config.bearer_only` | no | false | Only introspect tokens without redirecting |
-| `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
-| `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
-| `config.unauth_action` | auth | false | What action to take when unauthenticated <br> - `auth` to redirect to the login page and attempt (re)authenticatation,<br> - `deny` to stop with 401,<br> TODO: `pass` to pass through unauthenticated, `error` to use the error recovery page (if set) or just raise a 500 error, `401` or `410` to raise these respective error messages directly |
-| `config.ignore_auth_filters` || false | A comma-separated list of endpoints to bypass authentication for |
-| `config.redirect_uri` || false | A relative or absolute URI the OP will redirect to after successful authentication |
-| `config.userinfo_header_name` | `X-Userinfo` | false | The name of the HTTP header to use when passing the UserInfo to the upstream server |
-| `config.id_token_header_name` | `X-ID-Token` | false | The name of the HTTP header to use when passing the ID Token to the upstream server |
-| `config.access_token_header_name` | `X-Access-Token` | false | The name of the HTTP header to use when passing the Access Token to the upstream server|
-| `config.access_token_header_as_bearer` | no | false | Whether or not the access token should be passed as a Bearer token|
-| `config.disable_userinfo_header` | no | false | Disable passing the Userinfo to the upstream server |
-| `config.disable_id_token_header` | no | false | Disable passing the ID Token to the upstream server |
-| `config.disable_access_token_header` | no | false | Disable passing the Access Token to the upstream server |
+| Parameter                                   | Default                                  | Required | description                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------- | ---------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                      |                                          | true     | plugin name, has to be `oidc`                                                                                                                                                                                                                                                                                                                       |
+| `config.client_id`                          |                                          | true     | OIDC Client ID                                                                                                                                                                                                                                                                                                                                      |
+| `config.client_secret`                      |                                          | true     | OIDC Client secret                                                                                                                                                                                                                                                                                                                                  |
+| `config.discovery`                          | https://.well-known/openid-configuration | false    | OIDC Discovery Endpoint (`/.well-known/openid-configuration`)                                                                                                                                                                                                                                                                                       |
+| `config.scope`                              | openid                                   | false    | OAuth2 Token scope. To use OIDC it has to contains the `openid` scope                                                                                                                                                                                                                                                                               |
+| `config.ssl_verify`                         | false                                    | false    | Enable SSL verification to OIDC Provider                                                                                                                                                                                                                                                                                                            |
+| `config.session_secret`                     |                                          | false    | Additional parameter, which is used to encrypt the session cookie. Needs to be random                                                                                                                                                                                                                                                               |
+| `config.introspection_endpoint`             |                                          | false    | Token introspection endpoint                                                                                                                                                                                                                                                                                                                        |
+| `config.timeout`                            |                                          | false    | OIDC endpoint calls timeout                                                                                                                                                                                                                                                                                                                         |
+| `config.introspection_endpoint_auth_method` | client_secret_basic                      | false    | Token introspection authentication method. `resty-openidc` supports `client_secret_(basic\|post)`                                                                                                                                                                                                                                                   |
+| `config.bearer_only`                        | no                                       | false    | Only introspect tokens without redirecting                                                                                                                                                                                                                                                                                                          |
+| `config.realm`                              | kong                                     | false    | Realm used in WWW-Authenticate response header                                                                                                                                                                                                                                                                                                      |
+| `config.logout_path`                        | /logout                                  | false    | Absolute path used to logout from the OIDC RP                                                                                                                                                                                                                                                                                                       |
+| `config.unauth_action`                      | auth                                     | false    | What action to take when unauthenticated <br> - `auth` to redirect to the login page and attempt (re)authenticatation,<br> - `deny` to stop with 401,<br> TODO: `pass` to pass through unauthenticated, `error` to use the error recovery page (if set) or just raise a 500 error, `401` or `410` to raise these respective error messages directly |
+| `config.ignore_auth_filters`                |                                          | false    | A comma-separated list of endpoints to bypass authentication for                                                                                                                                                                                                                                                                                    |
+| `config.redirect_uri`                       |                                          | false    | A relative or absolute URI the OP will redirect to after successful authentication                                                                                                                                                                                                                                                                  |
+| `config.userinfo_header_name`               | `X-Userinfo`                             | false    | The name of the HTTP header to use when passing the UserInfo to the upstream server                                                                                                                                                                                                                                                                 |
+| `config.id_token_header_name`               | `X-ID-Token`                             | false    | The name of the HTTP header to use when passing the ID Token to the upstream server                                                                                                                                                                                                                                                                 |
+| `config.access_token_header_name`           | `X-Access-Token`                         | false    | The name of the HTTP header to use when passing the Access Token to the upstream server                                                                                                                                                                                                                                                             |
+| `config.access_token_header_as_bearer`      | no                                       | false    | Whether or not the access token should be passed as a Bearer token                                                                                                                                                                                                                                                                                  |
+| `config.disable_userinfo_header`            | no                                       | false    | Disable passing the Userinfo to the upstream server                                                                                                                                                                                                                                                                                                 |
+| `config.disable_id_token_header`            | no                                       | false    | Disable passing the ID Token to the upstream server                                                                                                                                                                                                                                                                                                 |
+| `config.disable_access_token_header`        | no                                       | false    | Disable passing the Access Token to the upstream server                                                                                                                                                                                                                                                                                             |
 
 ### Enabling kong-oidc
 
@@ -178,30 +176,30 @@ X-Id-Token: eyJuYmYiOjAsImF6cCI6ImtvbmciLCJpYXQiOjE1NDg1MTA3NjksImlzcyI6Imh0dHA6
 
 The OpenID Connect Core 1.0 profile specifies the following standard scopes and claims:
 
-| Scope | Claim(s) |
-| --- | --- |
-| `openid` | `sub`. In an ID Token, `iss`, `aud`, `exp`, `iat` will also be provided. |
-| `profile` | Typically claims like `name`, `family_name`, `given_name`, `middle_name`, `preferred_username`, `nickname`, `picture` and `updated_at`|
-| `email` | `email` and `email_verified` (_boolean_) indicating if the email address has been verified by the user |
+| Scope     | Claim(s)                                                                                                                               |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `openid`  | `sub`. In an ID Token, `iss`, `aud`, `exp`, `iat` will also be provided.                                                               |
+| `profile` | Typically claims like `name`, `family_name`, `given_name`, `middle_name`, `preferred_username`, `nickname`, `picture` and `updated_at` |
+| `email`   | `email` and `email_verified` (_boolean_) indicating if the email address has been verified by the user                                 |
 
-*Note that the `openid` scope is a mandatory designator scope.*
+_Note that the `openid` scope is a mandatory designator scope._
 
 #### Description of the standard claims
 
-| Claim | Type | Description |
-| --- | --- | --- |
-| `iss` | URI | The Uniform Resource Identifier uniquely identifying the OpenID Connect Provider (_OP_) |
-| `aud` | string / array | The intended audiences. For ID tokens, the identity token is one or more clients. For Access tokens, the audience is typically one or more Resource Servers |
-| `nbf` | integer | _Not before_ timestamp in Unix Epoch time*. May be omitted or set to 0 to indicate that the audience can disregard the claim |
-| `exp` | integer | _Expires_ timestamp in Unix Epoch time* |
-| `name` | string | Preferred display name. Ex. `John Doe` |
-| `family_name` | string | Last name. Ex. `Doe` |
-| `given_name` | string | First name. Ex. `John` |
-| `middle_name` | string | Middle name. Ex. `Donald` |
-| `nickname` | string | Nick name. Ex. `Johnny` |
-| `preferred_username` | string | Preferred user name. Ex. `johdoe` |
-| `picture` | base64 | A Base-64 encoded picture (typically PNG or JPEG) of the subject |
-| `updated_at` | integer | A timestamp in Unix Epoch time* |
+| Claim                | Type           | Description                                                                                                                                                 |
+| -------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `iss`                | URI            | The Uniform Resource Identifier uniquely identifying the OpenID Connect Provider (_OP_)                                                                     |
+| `aud`                | string / array | The intended audiences. For ID tokens, the identity token is one or more clients. For Access tokens, the audience is typically one or more Resource Servers |
+| `nbf`                | integer        | _Not before_ timestamp in Unix Epoch time\*. May be omitted or set to 0 to indicate that the audience can disregard the claim                               |
+| `exp`                | integer        | _Expires_ timestamp in Unix Epoch time\*                                                                                                                    |
+| `name`               | string         | Preferred display name. Ex. `John Doe`                                                                                                                      |
+| `family_name`        | string         | Last name. Ex. `Doe`                                                                                                                                        |
+| `given_name`         | string         | First name. Ex. `John`                                                                                                                                      |
+| `middle_name`        | string         | Middle name. Ex. `Donald`                                                                                                                                   |
+| `nickname`           | string         | Nick name. Ex. `Johnny`                                                                                                                                     |
+| `preferred_username` | string         | Preferred user name. Ex. `johdoe`                                                                                                                           |
+| `picture`            | base64         | A Base-64 encoded picture (typically PNG or JPEG) of the subject                                                                                            |
+| `updated_at`         | integer        | A timestamp in Unix Epoch time\*                                                                                                                            |
 
 `*` (Seconds since January 1st 1970).
 
@@ -209,10 +207,10 @@ The OpenID Connect Core 1.0 profile specifies the following standard scopes and 
 
 To pass the access token to the upstream server as a normal Bearer token, configure the plugin as follows:
 
-| Key | Value |
-| --- | --- |
-| `config.access_token_header_name` | `Authorization` |
-| `config.access_token_header_as_bearer` | `yes` |
+| Key                                    | Value           |
+| -------------------------------------- | --------------- |
+| `config.access_token_header_name`      | `Authorization` |
+| `config.access_token_header_as_bearer` | `yes`           |
 
 ## Development
 
