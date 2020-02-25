@@ -16,7 +16,7 @@ It maintains sessions for authenticated users by leveraging `lua-resty-openidc` 
 a configurable choice between storing the session state in a client-side browser cookie or use
 in of the server-side storage mechanisms `shared-memory|memcache|redis`.
 
-> **Note:** at the moment, there is an issue using memcached/redis, probably due to session locking: the sessions freeze. Help to debug this is appreciated. I am currently used shared memory to store sessions.
+> **Note:** at the moment, there is an issue using memcached/redis, probably due to session locking: the sessions freeze. Help to debug this is appreciated. I am currently using shared memory to store sessions.
 
 It supports server-wide caching of resolved Discovery documents and validated Access Tokens.
 
