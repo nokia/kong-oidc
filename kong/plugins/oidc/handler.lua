@@ -55,18 +55,23 @@ end
 
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
-  local res, err = require("resty.openidc").authenticate(oidcConfig, ngx.var.request_uri, oidcConfig.unauth_action)
- 
+  local unauth_action = oidcConfig.unauth_action
+  if unauth_action ~= "auth" then
+    -- constant for resty.oidc library
+    unauth_action = "deny"
+  end
+  local res, err = require("resty.openidc").authenticate(oidcConfig, ngx.var.request_uri, unauth_action)
+
   if err then
     if err == 'unauthorized request' then
-      utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)	
+      utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
     else
       if oidcConfig.recovery_page_path then
-    	ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
+    	  ngx.log(ngx.DEBUG, "Redirecting to recovery page: " .. oidcConfig.recovery_page_path)
         ngx.redirect(oidcConfig.recovery_page_path)
       end
-      utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
-    end    
+      utils.exit(ngx.HTTP_INTERNAL_SERVER_ERROR, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
+    end
   end
   return res
 end
