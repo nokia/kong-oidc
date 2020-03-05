@@ -37,9 +37,9 @@ The `X-Userinfo` header contains the payload from the Userinfo Endpoint
 X-Userinfo: {"preferred_username":"alice","id":"60f65308-3510-40ca-83f0-e9c0151cc680","sub":"60f65308-3510-40ca-83f0-e9c0151cc680"}
 ```
 
-The plugin also sets the `ngx.ctx.authenticated_consumer` variable, which can be using in other Kong plugins:
+The plugin also sets the `ngx.ctx.authenticated_credential` variable, which can be using in other Kong plugins:
 ```
-ngx.ctx.authenticated_consumer = {
+ngx.ctx.authenticated_credential = {
     id = "60f65308-3510-40ca-83f0-e9c0151cc680",   -- sub field from Userinfo
     username = "alice"                             -- preferred_username from Userinfo
 }
