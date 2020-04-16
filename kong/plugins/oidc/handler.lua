@@ -37,7 +37,7 @@ function handle(oidcConfig)
   if response == nil then
     response = make_oidc(oidcConfig)
     if response then
-      ngx.log(ngx.DEBUG, response)
+      ngx.log(ngx.DEBUG, "got response")
       if (response.user) then
         utils.injectUser(response.user)
       end
@@ -47,7 +47,11 @@ function handle(oidcConfig)
       if (response.id_token) then
         utils.injectIDToken(response.id_token)
       end
+
+      return
     end
+
+    ngx.log(ngx.DEBUG, "got no response")
   end
 end
 
