@@ -86,6 +86,22 @@ function M.injectUser(user)
   ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
 end
 
+function M.injectAnonymousUser(anonymousUserId)
+  local consumer_cache_key, consumer
+  consumer_cache_key = kong.db.consumers:cache_key(anonymousUserId)
+  consumer, err      = cache:get(consumer_cache_key, nil,
+                                 kong.client.load_consumer,
+                                 anonymousUserId)
+  if err then
+    kong.log.err(err)
+    return false
+  end
+
+  ngx.req.set_header("X-Anonymous-Consumer", "true")
+  ngx.req.set_header("X-Consumer-Username", ngx.consumer.username)
+  ngx.req.set_header("X-Consumer-Id", ngx.consumer.id)
+end
+
 function M.has_bearer_access_token()
   local header = ngx.req.get_headers()['Authorization']
   if header and header:find(" ") then

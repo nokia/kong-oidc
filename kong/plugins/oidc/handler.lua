@@ -37,7 +37,6 @@ function handle(oidcConfig)
   if response == nil then
     response = make_oidc(oidcConfig)
     if response then
-      ngx.log(ngx.DEBUG, "got response")
       if (response.user) then
         utils.injectUser(response.user)
       end
@@ -51,7 +50,10 @@ function handle(oidcConfig)
       return
     end
 
-    ngx.log(ngx.DEBUG, "got no response")
+    -- set anonymous headers if necessary --
+    if oidcConfig.anonymous ~= "" and oidcConfig.anonymous ~= nil then
+      utils.injectAnonymousUser(oidcConfig.anonymous)
+    end
   end
 end
 
