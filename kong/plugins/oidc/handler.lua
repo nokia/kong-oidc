@@ -54,7 +54,7 @@ function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
   
   local unauth_action = nil
-  if oidcConfig.anonymous != "" then
+  if oidcConfig.anonymous ~= "" and oidcConfig.anonymous ~= nil then
     unauth_action = "pass"
   end
   
