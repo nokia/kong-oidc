@@ -52,7 +52,13 @@ end
 
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
-  local res, err = require("resty.openidc").authenticate(oidcConfig)
+  
+  local unauth_action = nil
+  if oidcConfig.anonymous != "" then
+    unauth_action = "pass"
+  end
+  
+  local res, err = require("resty.openidc").authenticate(oidcConfig, nil, unauth_action)
   if err then
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)

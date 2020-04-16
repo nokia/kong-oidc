@@ -51,6 +51,7 @@ function M.get_options(config, ngx)
     realm = config.realm,
     redirect_uri_path = config.redirect_uri_path or M.get_redirect_uri_path(ngx),
     scope = config.scope,
+    anonymous = config.anonymous,
     response_type = config.response_type,
     ssl_verify = config.ssl_verify,
     token_endpoint_auth_method = config.token_endpoint_auth_method,
