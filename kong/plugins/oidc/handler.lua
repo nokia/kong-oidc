@@ -46,13 +46,26 @@ function handle(oidcConfig)
       if (response.id_token) then
         utils.injectIDToken(response.id_token)
       end
+
+      return
+    end
+
+    -- set anonymous headers if necessary --
+    if oidcConfig.anonymous ~= "" and oidcConfig.anonymous ~= nil then
+      utils.injectAnonymousUser(oidcConfig.anonymous)
     end
   end
 end
 
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
-  local res, err = require("resty.openidc").authenticate(oidcConfig)
+  
+  local unauth_action = nil
+  if oidcConfig.anonymous ~= "" and oidcConfig.anonymous ~= nil then
+    unauth_action = "pass"
+  end
+  
+  local res, err = require("resty.openidc").authenticate(oidcConfig, nil, unauth_action)
   if err then
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
