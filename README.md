@@ -82,6 +82,8 @@ You also need to set the `KONG_PLUGINS` environment variable
 | `config.bearer_only` | no | false | Only introspect tokens without redirecting |
 | `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
 | `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
+| `config.anonymous` | | false | Consumer UUID value to use as an “anonymous” consumer if authentication fails. If empty (default), user will be redirected to login form. |
+
 
 ### Enabling
 
