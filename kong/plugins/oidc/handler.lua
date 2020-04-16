@@ -37,6 +37,7 @@ function handle(oidcConfig)
   if response == nil then
     response = make_oidc(oidcConfig)
     if response then
+      ngx.log(ngx.DEBUG, response)
       if (response.user) then
         utils.injectUser(response.user)
       end
