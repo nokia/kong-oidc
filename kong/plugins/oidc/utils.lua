@@ -99,8 +99,8 @@ function M.injectAnonymousUser(anonymousUserId)
   end
 
   ngx.req.set_header("X-Anonymous-Consumer", "true")
-  ngx.req.set_header("X-Consumer-Username", ngx.consumer.username)
-  ngx.req.set_header("X-Consumer-Id", ngx.consumer.id)
+  ngx.req.set_header("X-Consumer-Username", consumer.username)
+  ngx.req.set_header("X-Consumer-Id", consumer.id)
 end
 
 function M.has_bearer_access_token()
