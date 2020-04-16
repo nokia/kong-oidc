@@ -88,6 +88,7 @@ end
 
 function M.injectAnonymousUser(anonymousUserId)
   local consumer_cache_key, consumer
+  local cache = kong.cache
   consumer_cache_key = kong.db.consumers:cache_key(anonymousUserId)
   consumer, err      = cache:get(consumer_cache_key, nil,
                                  kong.client.load_consumer,
