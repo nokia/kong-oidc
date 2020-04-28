@@ -69,7 +69,8 @@ function M.get_options(config, ngx)
     access_token_as_bearer = config.access_token_as_bearer == "yes",
     disable_userinfo_header = config.disable_userinfo_header == "yes",
     disable_id_token_header = config.disable_id_token_header == "yes",
-    disable_access_token_header = config.disable_access_token_header == "yes"
+    disable_access_token_header = config.disable_access_token_header == "yes",
+    groups_claim = config.groups_claim == "groups"
   }
 end
 
@@ -102,6 +103,12 @@ function M.injectUser(user, headerName)
   ngx.ctx.authenticated_credential = tmp_user
   local userinfo = cjson.encode(user)
   ngx.req.set_header(headerName, ngx.encode_base64(userinfo))
+end
+
+function M.injectGroups(user, claim)
+  if user[claim] ~= nil then
+    kong.ctx.shared.authenticated_groups = user[claim]
+  end
 end
 
 function M.has_bearer_access_token()

@@ -31,6 +31,7 @@ function handle(oidcConfig)
     response = introspect(oidcConfig)
     if response then
       utils.injectUser(response, oidcConfig.userinfo_header_name)
+      utils.injectGroups(response, oidcConfig.groups_claim)
     end
   end
 
@@ -40,6 +41,7 @@ function handle(oidcConfig)
       if (not oidcConfig.disable_userinfo_header
           and response.user) then
         utils.injectUser(response.user, oidcConfig.userinfo_header_name)
+        utils.injectGroups(response.user, oidcConfig.groups_claim)
       end
       if (not oidcConfig.disable_access_token_header
           and response.access_token) then

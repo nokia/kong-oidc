@@ -24,10 +24,11 @@ return {
     userinfo_header_name = { type = "string", required = false, default = "X-USERINFO" },
     id_token_header_name = { type = "string", required = false, default = "X-ID-Token" },
     access_token_header_name = { type = "string", required = false, default = "X-Access-Token" },
-    access_token_header_as_bearer = { type = "string", required = false, default = "no" }, 
+    access_token_header_as_bearer = { type = "string", required = false, default = "no" },
     disable_userinfo_header = { type = "string", required = false, default = "no" },
     disable_id_token_header = { type = "string", required = false, default = "no" },
     disable_access_token_header = { type = "string", required = false, default = "no" },
-    revoke_tokens_on_logout = { type = "string", required = false, default = "no" }
+    revoke_tokens_on_logout = { type = "string", required = false, default = "no" },
+    groups_claim = { type = "string", required = false, default = "groups" }
   }
 }
