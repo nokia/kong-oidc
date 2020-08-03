@@ -186,3 +186,8 @@ To tear the environment down:
 ```
 ./bin/teardown-env.sh
 ```
+
+
+## License
+
+This project is licensed under the Apache-2.0 license - see the [LICENSE](https://github.com/nokia/kong-oidc/blob/master/LICENSE).
