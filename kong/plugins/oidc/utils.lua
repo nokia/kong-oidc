@@ -40,6 +40,16 @@ function M.get_redirect_uri_path(ngx)
 end
 
 function M.get_options(config, ngx)
+  local function add_host(req)
+    local host=ngx.req.get_headers()["host"]
+    if host then
+      local h = req.headers or {}
+      h['host'] = host
+      req.headers = h
+    end
+    return req
+  end
+
   return {
     client_id = config.client_id,
     client_secret = config.client_secret,
@@ -58,6 +68,7 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
+    http_request_decorator= add_host,
   }
 end
 
