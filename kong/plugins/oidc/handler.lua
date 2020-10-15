@@ -37,13 +37,13 @@ function handle(oidcConfig)
   if response == nil then
     response = make_oidc(oidcConfig)
     if response then
-      if (response.user) then
+      if (response.user and oidcConfig.inject_user == "yes") then
         utils.injectUser(response.user)
       end
-      if (response.access_token) then
+      if (response.access_token and oidcConfig.inject_access_token == "yes") then
         utils.injectAccessToken(response.access_token)
       end
-      if (response.id_token) then
+      if (response.id_token and oidcConfig.inject_id_token == "yes") then
         utils.injectIDToken(response.id_token)
       end
     end
