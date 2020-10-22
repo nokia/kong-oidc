@@ -14,4 +14,12 @@ function M.shouldProcessRequest(config)
   return not shouldIgnoreRequest(config.filters)
 end
 
+function M.isAuthBootstrapRequest(config)
+  if (config.auth_bootstrap_path) then
+    return string.find(ngx.var.uri, config.auth_bootstrap_path) != nil
+  else
+    return false
+  end
+end
+
 return M

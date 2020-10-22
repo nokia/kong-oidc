@@ -17,7 +17,11 @@ function OidcHandler:access(config)
 
   if filter.shouldProcessRequest(oidcConfig) then
     session.configure(config)
-    handle(oidcConfig)
+    if filter.isAuthBootstrapRequest(oidcConfig) then
+      auth_bootstrap(oidcConfig)
+    else
+      handle(oidcConfig)
+    end
   else
     ngx.log(ngx.DEBUG, "OidcHandler ignoring request, path: " .. ngx.var.request_uri)
   end
@@ -53,6 +57,19 @@ end
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
   local res, err = require("resty.openidc").authenticate(oidcConfig)
+  if err then
+    if oidcConfig.recovery_page_path then
+      ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
+      ngx.redirect(oidcConfig.recovery_page_path)
+    end
+    utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
+  end
+  return res
+end
+
+function auth_bootstrap(oidcConfig)
+  ngx.log(ngx.DEBUG, "Authbootstrap flow, requested path: " .. ngx.var.request_uri)
+  local res, err = require("resty.openidc").save_as_authenticated(oidcConfig)
   if err then
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
