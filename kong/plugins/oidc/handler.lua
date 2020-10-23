@@ -6,7 +6,6 @@ local session = require("kong.plugins.oidc.session")
 
 OidcHandler.PRIORITY = 1000
 
-
 function OidcHandler:new()
   OidcHandler.super.new(self, "oidc")
 end
@@ -17,6 +16,7 @@ function OidcHandler:access(config)
 
   if filter.shouldProcessRequest(oidcConfig) then
     session.configure(config)
+    ngx.log(ngx.DEBUG, " :: auth_bootstrap_path: " .. config.auth_bootstrap_path)
     if filter.isAuthBootstrapRequest(oidcConfig) then
       auth_bootstrap(oidcConfig)
     else

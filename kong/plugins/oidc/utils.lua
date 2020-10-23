@@ -56,6 +56,7 @@ function M.get_options(config, ngx)
     token_endpoint_auth_method = config.token_endpoint_auth_method,
     recovery_page_path = config.recovery_page_path,
     filters = parseFilters(config.filters),
+    auth_bootstrap_path = config.auth_bootstrap_path,
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
   }

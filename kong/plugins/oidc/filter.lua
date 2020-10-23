@@ -16,7 +16,7 @@ end
 
 function M.isAuthBootstrapRequest(config)
   if (config.auth_bootstrap_path) then
-    return string.find(ngx.var.uri, config.auth_bootstrap_path) != nil
+    return string.find(ngx.var.uri, config.auth_bootstrap_path) == 1
   else
     return false
   end
