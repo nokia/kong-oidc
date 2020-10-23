@@ -69,7 +69,7 @@ end
 
 function auth_bootstrap(oidcConfig)
   ngx.log(ngx.DEBUG, "Authbootstrap flow, requested path: " .. ngx.var.request_uri)
-  local tokens_str = ngx.req.get_headers()['tokens']
+  local tokens_str = ngx.req.get_headers()['x-auth-bootstrap']
   local json_tokens = cjson_s.decode(tokens_str)
   if(json_tokens) then
     local res, err = require("resty.openidc").save_as_authenticated(oidcConfig,nil,json_tokens)
