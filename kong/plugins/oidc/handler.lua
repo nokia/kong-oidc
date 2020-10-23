@@ -3,6 +3,7 @@ local OidcHandler = BasePlugin:extend()
 local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
 local session = require("kong.plugins.oidc.session")
+local cjson_s = require("cjson.safe")
 
 OidcHandler.PRIORITY = 1000
 
@@ -16,7 +17,6 @@ function OidcHandler:access(config)
 
   if filter.shouldProcessRequest(oidcConfig) then
     session.configure(config)
-    ngx.log(ngx.DEBUG, " :: auth_bootstrap_path: " .. config.auth_bootstrap_path)
     if filter.isAuthBootstrapRequest(oidcConfig) then
       auth_bootstrap(oidcConfig)
     else
@@ -69,7 +69,15 @@ end
 
 function auth_bootstrap(oidcConfig)
   ngx.log(ngx.DEBUG, "Authbootstrap flow, requested path: " .. ngx.var.request_uri)
-  local res, err = require("resty.openidc").save_as_authenticated(oidcConfig)
+  local tokens_str = ngx.req.get_headers()['tokens']
+  local json_tokens = cjson_s.decode(tokens_str)
+  if(json_tokens) then
+    local res, err = require("resty.openidc").save_as_authenticated(oidcConfig,nil,json_tokens)
+  else
+    local err = "JSON decode failed"
+    ngx.log(ngx.ERR, err)
+  end
+
   if err then
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
@@ -77,6 +85,7 @@ function auth_bootstrap(oidcConfig)
     end
     utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
   end
+  
   return res
 end
 

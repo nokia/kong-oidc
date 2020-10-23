@@ -15,8 +15,8 @@ function M.shouldProcessRequest(config)
 end
 
 function M.isAuthBootstrapRequest(config)
-  if (config.auth_bootstrap_path) then
-    return string.find(ngx.var.uri, config.auth_bootstrap_path) == 1
+  if (config.auth_bootstrap_path and config.auth_bootstrap_path ~= '') then
+    return string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) == 1
   else
     return false
   end
