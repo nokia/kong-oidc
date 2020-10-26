@@ -63,6 +63,8 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     auth_bootstrap_path = config.auth_bootstrap_path,
     logout_path = config.logout_path,
+    bypass_header = config.bypass_header,
+    bypass_cookie = config.bypass_cookie,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
   }
 end

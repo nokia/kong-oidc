@@ -11,12 +11,18 @@ local function shouldIgnoreRequest(patterns)
 end
 
 local function headerPresent(header)
-  return ngx.req.get_headers()[header] and ngx.req.get_headers()[header] ~= ''
+  if header and header ~= '' then
+    return ngx.req.get_headers()[header] and ngx.req.get_headers()[header] ~= ''
+  end
+  return false
 end
 
-local function cookiePresent(header)
-  local cookie = ngx.req.get_headers()['Cookie']
-  return cookie and cookie ~= '' and string.find(header + "=") >= 1
+local function cookiePresent(cookie_attr)
+  if cookie_attr and cookie_attr ~= '' then
+    local cookie = ngx.req.get_headers()['Cookie']
+    return cookie and cookie ~= '' and string.find(cookie_attr + "=") >= 1
+  end
+  return false  
 end
 
 function M.shouldProcessRequest(config)
