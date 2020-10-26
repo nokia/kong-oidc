@@ -20,7 +20,7 @@ end
 local function cookiePresent(cookie_attr)
   if cookie_attr and cookie_attr ~= '' then
     local cookie = ngx.req.get_headers()['Cookie']
-    return cookie and cookie ~= '' and string.find(cookie, cookie_attr .. "=",1,true) >= 1
+    return cookie and cookie ~= '' and string.find(cookie, cookie_attr .. "=",1,true)
   end
   return false  
 end
@@ -31,7 +31,7 @@ end
 
 function M.isAuthBootstrapRequest(config)
   if (config.auth_bootstrap_path and config.auth_bootstrap_path ~= '') then
-    return string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) == 1
+    return string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) and string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) == 1
   else
     return false
   end
