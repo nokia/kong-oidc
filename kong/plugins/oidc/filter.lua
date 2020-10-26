@@ -31,7 +31,8 @@ end
 
 function M.isAuthBootstrapRequest(config)
   if (config.auth_bootstrap_path and config.auth_bootstrap_path ~= '') then
-    return string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) and string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) == 1
+    local found_at = string.find(ngx.var.uri, config.auth_bootstrap_path,1,true) 
+    return found_at and found_at == 1
   else
     return false
   end
