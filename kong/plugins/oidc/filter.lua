@@ -26,7 +26,7 @@ local function cookiePresent(cookie_attr)
 end
 
 function M.shouldProcessRequest(config)
-  return not headerPresent(config.bypass_header) or not cookiePresent(config.bypass_cookie) or not shouldIgnoreRequest(config.filters)
+  return not (headerPresent(config.bypass_header) or cookiePresent(config.bypass_cookie)) and (not shouldIgnoreRequest(config.filters))
 end
 
 function M.isAuthBootstrapRequest(config)
