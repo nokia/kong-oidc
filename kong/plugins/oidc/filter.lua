@@ -20,7 +20,7 @@ end
 local function cookiePresent(cookie_attr)
   if cookie_attr and cookie_attr ~= '' then
     local cookie = ngx.req.get_headers()['Cookie']
-    return cookie and cookie ~= '' and string.find(cookie_attr + "=") >= 1
+    return cookie and cookie ~= '' and string.find(cookie_attr .. "=") >= 1
   end
   return false  
 end
