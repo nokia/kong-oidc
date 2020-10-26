@@ -11,7 +11,16 @@ local function shouldIgnoreRequest(patterns)
 end
 
 function M.shouldProcessRequest(config)
-  return not shouldIgnoreRequest(config.filters)
+  return not headerPresent(config.bypass_header) or not cookiePresent(config.bypass_cookie) or not shouldIgnoreRequest(config.filters)
+end
+
+local function headerPresent(header)
+  return ngx.req.get_headers()[header] and ngx.req.get_headers()[header] ~= ''
+end
+
+local function cookiePresent(header)
+  local cookie = ngx.req.get_headers()['Cookie']
+  return cookie and cookie ~= '' and string.find(header + "=") >= 1
 end
 
 function M.isAuthBootstrapRequest(config)
