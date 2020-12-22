@@ -31,6 +31,7 @@ function handle(oidcConfig)
     response = introspect(oidcConfig)
     if response then
       utils.injectUser(response)
+      utils.injectUserId(response)
     end
   end
 
