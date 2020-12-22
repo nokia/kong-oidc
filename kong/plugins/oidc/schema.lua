@@ -18,6 +18,7 @@ return {
     inject_user = { type = "string", required = false, default = "yes" },
     inject_access_token = { type = "string", required = false, default = "yes" },
     inject_id_token = { type = "string", required = false, default = "yes" },
+    ignore_nonce_validation = { type = "string", required = false, default = "no" },
     token_endpoint_auth_method = { type = "string", required = true, default = "client_secret_post" },
     session_secret = { type = "string", required = false },
     recovery_page_path = { type = "string" },

@@ -65,6 +65,7 @@ function M.get_options(config, ngx)
     logout_path = config.logout_path,
     bypass_header = config.bypass_header,
     bypass_cookie = config.bypass_cookie,
+    ignore_nonce_validation = config.ignore_nonce_validation,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
   }
 end
