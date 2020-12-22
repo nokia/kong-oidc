@@ -85,6 +85,10 @@ function M.injectUser(user)
   ngx.req.set_header("X-Userinfo", ngx.encode_base64(userinfo))
 end
 
+function M.injectUserId(user)
+  ngx.req.set_header("X-Resource-Owner", user.sub)
+end
+
 function M.has_bearer_access_token()
   local header = ngx.req.get_headers()['Authorization']
   if header and header:find(" ") then
