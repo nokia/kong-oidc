@@ -29,7 +29,8 @@ function TestIntrospect:test_access_token_exists()
 
   self.handler:access({introspection_endpoint = "x"})
   lu.assertTrue(self:log_contains("introspect succeeded"))
-  lu.assertEquals(headers['X-Userinfo'], "eyJzdWIiOiJzdWIifQ==")
+  lu.assertEquals(headers['X-Userinfo'], "eyJzdWIiOiJzdWIifQ==") 
+  lu.assertEquals(headers['X-Resource-Owner'], "sub")
 end
 
 function TestIntrospect:test_no_authorization_header()
