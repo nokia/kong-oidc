@@ -30,7 +30,8 @@ function handle(oidcConfig)
   if oidcConfig.introspection_endpoint then
     response = introspect(oidcConfig)
     if response then
-      utils.injectUser(response)
+      utils.injectUser(response, oidcConfig.userinfo_header_name)
+      utils.injectGroups(response, oidcConfig.groups_claim)
       utils.injectUserId(response)
     end
   end
@@ -38,15 +39,19 @@ function handle(oidcConfig)
   if response == nil then
     response = make_oidc(oidcConfig)
     if response then
-      if (response.user) then
-        utils.injectUser(response.user)
+      if (not oidcConfig.disable_userinfo_header
+          and response.user) then
+        utils.injectUser(response.user, oidcConfig.userinfo_header_name)
+        utils.injectGroups(response.user, oidcConfig.groups_claim)
         utils.injectUserId(response.user)
       end
-      if (response.access_token) then
-        utils.injectAccessToken(response.access_token)
+      if (not oidcConfig.disable_access_token_header
+          and response.access_token) then
+        utils.injectAccessToken(response.access_token, oidcConfig.access_token_header_name, oidcConfig.access_token_as_bearer)
       end
-      if (response.id_token) then
-        utils.injectIDToken(response.id_token)
+      if (not oidcConfig.disable_id_token_header
+          and response.id_token) then
+        utils.injectIDToken(response.id_token, oidcConfig.id_token_header_name)
       end
     end
   end
@@ -54,13 +59,23 @@ end
 
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
-  local res, err = require("resty.openidc").authenticate(oidcConfig)
+  local unauth_action = oidcConfig.unauth_action
+  if unauth_action ~= "auth" then
+    -- constant for resty.oidc library
+    unauth_action = "deny"
+  end
+  local res, err = require("resty.openidc").authenticate(oidcConfig, ngx.var.request_uri, unauth_action)
+
   if err then
-    if oidcConfig.recovery_page_path then
-      ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
-      ngx.redirect(oidcConfig.recovery_page_path)
+    if err == 'unauthorized request' then
+      utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
+    else
+      if oidcConfig.recovery_page_path then
+    	  ngx.log(ngx.DEBUG, "Redirecting to recovery page: " .. oidcConfig.recovery_page_path)
+        ngx.redirect(oidcConfig.recovery_page_path)
+      end
+      utils.exit(ngx.HTTP_INTERNAL_SERVER_ERROR, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
     end
-    utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
   end
   return res
 end
@@ -80,6 +95,5 @@ function introspect(oidcConfig)
   end
   return nil
 end
-
 
 return OidcHandler
