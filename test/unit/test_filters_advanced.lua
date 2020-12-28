@@ -8,6 +8,9 @@ function TestFilter:setUp()
   _G.ngx = {
     var = {
       uri = ""
+    },
+    req = {
+      get_headers = function() return {} end
     }
   }
 end
@@ -121,6 +124,49 @@ end
 function TestFilter:testTildeAfterPrefix()
   ngx.var.uri = "/arc~123"
   lu.assertTrue(filter.shouldProcessRequest(config) )
+end
+
+function TestFilter:testBypassWhenCookie()
+  config.bypass_cookie = "Auth-Token"
+  ngx.req.get_headers = function () 
+     return { Cookie = 'Auth-Token=bla;'} 
+  end
+  lu.assertFalse(filter.shouldProcessRequest(config) )
+end
+
+function TestFilter:testBypassWhenHeader()
+  config.bypass_header = "XAuthorization"
+  ngx.req.get_headers = function () 
+     return { XAuthorization = 'blue'} 
+  end
+  lu.assertFalse(filter.shouldProcessRequest(config) )
+end
+
+function TestFilter:testBypassBothConfiguredCookieProvided()
+  config.bypass_header = "XAuthorization"
+  config.bypass_cookie = "Auth-Token"
+  ngx.req.get_headers = function () 
+      return { Cookie = 'Auth-Token=bla;'} 
+  end
+  lu.assertFalse(filter.shouldProcessRequest(config) )
+end
+
+function TestFilter:testBypassBothConfiguredHeaderProvided()
+  config.bypass_header = "XAuthorization"
+  config.bypass_cookie = "Auth-Token"
+  ngx.req.get_headers = function () 
+      return { XAuthorization = 'blue'} 
+  end
+  lu.assertFalse(filter.shouldProcessRequest(config) )
+end
+
+function TestFilter:testBypassBothConfiguredBothProvided()
+  config.bypass_header = "XAuthorization"
+  config.bypass_cookie = "Auth-Token"
+  ngx.req.get_headers = function () 
+      return { XAuthorization = 'blue', Cookie = "Auth-Token=blue"} 
+  end
+  lu.assertFalse(filter.shouldProcessRequest(config) )
 end
 
 lu.run()

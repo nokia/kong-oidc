@@ -1,10 +1,11 @@
 local lu = require("luaunit")
 TestHandler = require("test.unit.mockable_case"):extend()
 
-
+local config
 function TestHandler:setUp()
   TestHandler.super:setUp()
 
+  config = {}
   package.loaded["resty.openidc"] = nil
   self.module_resty = {openidc = {
     authenticate = function(...) return {}, nil end }
@@ -191,6 +192,35 @@ function TestHandler:test_bearer_only_with_bad_token()
   lu.assertEquals(ngx.header["WWW-Authenticate"], 'Bearer realm="kong",error="validation failed"')
   lu.assertEquals(ngx.status, ngx.HTTP_UNAUTHORIZED)
   lu.assertFalse(self:log_contains("introspect succeeded"))
+end
+
+
+function TestHandler:test_auth_bootstrap()
+  self.module_resty.openidc.save_as_authenticated = function(oidcConfig,session_opts,json_tokens) 
+    return {}
+  end
+  local headers = {}
+  headers['x-auth-bootstrap'] = '{"id_token":"eyJraWQiOiJuaDlWUXpuUFwvd1NHM3J"}'
+  ngx.var.uri = "/auth-bootstrap"
+  config.auth_bootstrap_path= "/auth-bootstrap"
+  ngx.req.get_headers = function() return headers end
+
+  self.handler:access(config)
+  lu.assertFalse(self:log_contains("calling authenticate"))
+end
+
+function TestHandler:test_auth_bootstrap_no_token()
+  self.module_resty.openidc.save_as_authenticated = function(oidcConfig,session_opts,json_tokens) 
+    return {}
+  end
+  ngx.var.uri = "/auth-bootstrap"
+  config.auth_bootstrap_path= "/auth-bootstrap"
+  ngx.req.get_headers = function() return {} end
+
+  self.handler:access(config)
+  lu.assertFalse(self:log_contains("calling authenticate"))
+  print(ngx.status)
+  lu.assertEquals(ngx.status, ngx.HTTP_UNAUTHORIZED)
 end
 
 lu.run()
