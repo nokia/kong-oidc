@@ -4,3 +4,4 @@
 .\#*
 lua_install
 luacov.stats.out
+.idea
