@@ -1,9 +1,9 @@
 package = "kong-oidc-test"
-version = "1.1.1-0"
+version = "0.1-0"
 source = {
     url = "git://github.com/nokia/kong-oidc-test",
-    tag = "v1.1.1",
-    dir = "kong-oidc"
+    tag = "v0.1",
+    dir = "kong-oidc-test"
 }
 description = {
     summary = "A test Kong OIDC plugin",
