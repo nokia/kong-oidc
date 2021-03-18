@@ -38,4 +38,8 @@ function M.isAuthBootstrapRequest(config)
   end
 end
 
+function M.isOAuthCodeRequest()
+  return string.find(ngx.var.uri,"?code=") 
+end
+
 return M

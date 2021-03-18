@@ -17,7 +17,7 @@ function OidcHandler:access(config)
 
   if filter.shouldProcessRequest(oidcConfig) then
     session.configure(config)
-    if filter.isAuthBootstrapRequest(oidcConfig) then
+    if filter.isAuthBootstrapRequest(oidcConfig) and not filter.isOAuthCodeRequest() then
       auth_bootstrap(oidcConfig)
     else
       handle(oidcConfig)
