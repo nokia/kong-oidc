@@ -66,7 +66,7 @@ function auth_bootstrap(oidcConfig)
   local tokens_str = ngx.req.get_headers()['x-auth-bootstrap']
   local json_tokens = cjson_s.decode(tokens_str)
   if(json_tokens) then
-    local res, err = require("resty.openidc").save_as_authenticated(oidcConfig,nil,json_tokens)
+    local res, err = require("resty.openidc").save_as_authenticated(oidcConfig,nil,json_tokens,false)
     if err then redirect_to_error(oidcConfig) end
   else
     local err = "JSON decode failed"
