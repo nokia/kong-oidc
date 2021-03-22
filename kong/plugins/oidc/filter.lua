@@ -39,7 +39,8 @@ function M.isAuthBootstrapRequest(config)
 end
 
 function M.isOAuthCodeRequest()
-  return string.find(ngx.var.uri,"?code=") 
+  ngx.log(ngx.DEBUG, "oauth check on url: " .. ngx.var.request_uri)
+  return string.find(ngx.var.request_uri,"?code=") 
 end
 
 return M
