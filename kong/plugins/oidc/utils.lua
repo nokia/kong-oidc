@@ -42,14 +42,18 @@ end
 function M.get_options(config, ngx)
   return {
     client_id = config.client_id,
-    client_secret = config.client_secret,
+    client_secret = ngx.var.client_secret or config.client_secret,
     discovery = config.discovery,
     introspection_endpoint = config.introspection_endpoint,
     timeout = config.timeout,
     introspection_endpoint_auth_method = config.introspection_endpoint_auth_method,
+    introspection_expiry_claim = config.introspection_expiry_claim,
+    introspection_interval = config.introspection_interval,
+    introspection_cache_ignore = config.introspection_cache_ignore,
     bearer_only = config.bearer_only,
     realm = config.realm,
     redirect_uri_path = config.redirect_uri_path or M.get_redirect_uri_path(ngx),
+    redirect_uri = config.redirect_uri,
     scope = config.scope,
     response_type = config.response_type,
     ssl_verify = config.ssl_verify,
@@ -58,8 +62,43 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
+    redirect_after_logout_with_id_token_hint = config.redirect_after_logout_with_id_token_hint,
+    post_logout_redirect_uri = config.post_logout_redirect_uri,
+    anonymous_requests_allow = config.anonymous_requests_allow,
+    allow_anonymous_html_request = config.allow_anonymous_html_request,
+    session_name = config.session_name,
   }
 end
+
+function M.get_session_options(config, ngx)
+  return {
+    name = config.session_name,
+    storage = config.session_storage,
+    strategy = config.session_strategy,
+    redis = {
+      host = config.session_redis_host,
+      port = config.session_redis_port,
+      prefix = config.session_redis_prefix,
+      socket = config.session_redis_socket,
+      host = config.session_redis_host,
+      auth = config.session_redis_auth,
+      server_name = config.session_redis_server_name,
+      ssl = config.session_redis_ssl,
+      ssl_verify = config.session_redis_ssl_verify,
+      uselocking = config.session_redis_uselocking,
+      pool = {
+        size = config.session_redis_pool_size,
+        backlog = config.session_redis_pool_backlog,
+      }
+    },
+    cookie = {
+      samesite = config.session_cookie_samesite,
+      domain = config.session_cookie_domain,
+      secure = config.session_cookie_secure,
+    }
+  }
+end
+
 
 function M.exit(httpStatusCode, message, ngxCode)
   ngx.status = httpStatusCode
