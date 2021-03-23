@@ -83,6 +83,56 @@ You also need to set the `KONG_PLUGINS` environment variable
 | `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
 | `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
 
+
+| Parameter | Type | Default  | Required | description |
+| --- | --- | --- | --- | --- |
+| `name` | string | `oidc` | true | plugin name, has to be `oidc` |
+| `config.client_id` | string | | true | |
+| `config.client_secret` | string | | false | |
+| `config.discovery` | string | `https://.well-known/openid-configuration` | true | |
+| `config.introspection_endpoint` | string | | false | |
+| `config.timeout` | number | | false | |
+| `config.introspection_endpoint_auth_method` | string | | false | |
+| `config.introspection_expiry_claim` | string | exp | false | |
+| `config.introspection_interval` | number | 0 | false | |
+| `config.introspection_cache_ignore` | boolean | false | false | |
+| `config.bearer_only` | string | `no` | true | |
+| `config.realm` | string | `kong` | true | |
+| `config.redirect_uri_path` | string | | true | |
+| `config.redirect_uri` | string | | false | |
+| `config.scope` | string | `openid` | true | |
+
+
+response_type = { type = "string", required = true, default = "code" },
+ssl_verify = { type = "string", required = true, default = "no" },
+token_endpoint_auth_method = { type = "string", required = true, default = "client_secret_post" },
+session_secret = { type = "string", required = false, default = "623q4hR325t36VsCD3g567922IC0073T"  },
+recovery_page_path = { type = "string" },
+logout_path = { type = "string", required = false, default = '/logout' },
+redirect_after_logout_uri = { type = "string", required = false, default = '/' },
+post_logout_redirect_uri = { type = "string", required = false },
+redirect_after_logout_with_id_token_hint = { type = "boolean", required = false, default = true },
+filters = { type = "string" },
+session_name = { type = "string", required = false, default = 'session' },
+session_storage = { type = "string", required = false, default = 'cookie' },
+session_strategy = { type = "string", required = false, default = 'regenerate' },
+session_redis_host = { type = "string", required = false, default = '127.0.0.1' },
+session_redis_port = { type = "string", required = false, default = '6379' },
+session_redis_server_name = { type = "string", required = false },
+session_redis_auth = { type = "string", required = false },
+session_redis_uselocking = { type = "string", required = false, default = 'false' },
+session_redis_database = { type = "string", required = false },
+session_redis_prefix = { type = "string", required = false },
+session_redis_ssl = { type = "string", required = false, default = 'true' },
+session_redis_ssl_verify = { type = "string", required = false, default = 'off'},
+session_redis_pool_size = { type = "string", required = false, default = '10'},
+session_redis_pool_backlog = { type = "string", required = false, default = '10'},
+session_cookie_samesite = { type = "string", required = false, default = 'None'},
+session_cookie_secure = { type = "boolean", required = false, default = true},
+session_cookie_domain = { type = "string", required = false },
+
+
+
 ### Enabling
 
 To enable the plugin only for one API:
