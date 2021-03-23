@@ -14,18 +14,18 @@ end
 function OidcHandler:access(config)
   OidcHandler.super.access(self)
   local oidcConfig = utils.get_options(config, ngx)
+  local sessionConfig = utils.get_session_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
+    ngx.log(ngx.DEBUG, "Handling request: " .. ngx.var.request_uri)
     session.configure(config)
-    handle(oidcConfig)
+    handle(oidcConfig, sessionConfig)
   else
     ngx.log(ngx.DEBUG, "OidcHandler ignoring request, path: " .. ngx.var.request_uri)
   end
-
-  ngx.log(ngx.DEBUG, "OidcHandler done")
 end
 
-function handle(oidcConfig)
+function handle(oidcConfig, sessionConfig)
   local response
   if oidcConfig.introspection_endpoint then
     response = introspect(oidcConfig)
@@ -35,7 +35,7 @@ function handle(oidcConfig)
   end
 
   if response == nil then
-    response = make_oidc(oidcConfig)
+    response = make_oidc(oidcConfig, sessionConfig)
     if response then
       if (response.user) then
         utils.injectUser(response.user)
@@ -50,9 +50,9 @@ function handle(oidcConfig)
   end
 end
 
-function make_oidc(oidcConfig)
+function make_oidc(oidcConfig, sessionConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
-  local res, err = require("resty.openidc").authenticate(oidcConfig)
+  local res, err = require("resty.openidc").authenticate(oidcConfig, nil, nil, sessionConfig)
   if err then
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
