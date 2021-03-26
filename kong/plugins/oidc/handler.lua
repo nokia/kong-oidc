@@ -14,6 +14,12 @@ end
 function OidcHandler:access(config)
   OidcHandler.super.access(self)
   local oidcConfig = utils.get_options(config, ngx)
+  local cookie = ngx.req.get_headers()['Cookie'];
+  if cookie ~= nil then
+    ngx.log(ngx.DEBUG, "COOKIES:" .. cookie)
+  else
+    ngx.log(ngx.DEBUG,"no cookies found")
+  end
 
   if filter.shouldProcessRequest(oidcConfig) then
     session.configure(config)

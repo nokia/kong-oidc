@@ -10,15 +10,17 @@ local function shouldIgnoreRequest(patterns)
   return false
 end
 
-local function headerPresent(header)
-  if header and header ~= '' then
-    return ngx.req.get_headers()[header] and ngx.req.get_headers()[header] ~= ''
+local function headerPresent(headerList)
+  if headerList and headerList ~= '' then
+    for _, header in ipairs(headerList) do
+      return ngx.req.get_headers()[header] and ngx.req.get_headers()[header] ~= ''
+    end    
   end
   return false
 end
 
-local function cookiePresent(cookie_attr)
-  if cookie_attr and cookie_attr ~= '' then
+local function cookiePresent(cookie_attr_list)
+  if cookie_attr_list and cookie_attr_list ~= '' then
     local cookie = ngx.req.get_headers()['Cookie']
     return cookie and cookie ~= '' and string.find(cookie, cookie_attr .. "=",1,true)
   end
