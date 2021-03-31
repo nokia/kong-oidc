@@ -2,7 +2,8 @@
 
 [![Join the chat at https://gitter.im/nokia/kong-oidc](https://badges.gitter.im/nokia/kong-oidc.svg)](https://gitter.im/nokia/kong-oidc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc) 
+**Continuous
+Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc)
 [![Coverage Status](https://coveralls.io/repos/github/nokia/kong-oidc/badge.svg?branch=master)](https://coveralls.io/github/nokia/kong-oidc?branch=master) <br/>
 
 **kong-oidc** is a plugin for [Kong](https://github.com/Mashape/kong) implementing the
@@ -12,18 +13,17 @@ It authenticates users against an OpenID Connect Provider using
 [OpenID Connect Discovery](http://openid.net/specs/openid-connect-discovery-1_0.html)
 and the Basic Client Profile (i.e. the Authorization Code flow).
 
-It maintains sessions for authenticated users by leveraging `lua-resty-openidc` thus offering
-a configurable choice between storing the session state in a client-side browser cookie or use
-in of the server-side storage mechanisms `shared-memory|memcache|redis`.
+It maintains sessions for authenticated users by leveraging `lua-resty-openidc` thus offering a configurable choice
+between storing the session state in a client-side browser cookie or use in of the server-side storage
+mechanisms `shared-memory|memcache|redis`.
 
 It supports server-wide caching of resolved Discovery documents and validated Access Tokens.
 
-It can be used as a reverse proxy terminating OAuth/OpenID Connect in front of an origin server so that
-the origin server/services can be protected with the relevant standards without implementing those on
-the server itself.
+It can be used as a reverse proxy terminating OAuth/OpenID Connect in front of an origin server so that the origin
+server/services can be protected with the relevant standards without implementing those on the server itself.
 
-Introspection functionality add capability for already authenticated users and/or applications that
-already posses acces token to go through kong. The actual token verification is then done by Resource Server.
+Introspection functionality add capability for already authenticated users and/or applications that already posses acces
+token to go through kong. The actual token verification is then done by Resource Server.
 
 ## How does it work
 
@@ -38,6 +38,7 @@ X-Userinfo: {"preferred_username":"alice","id":"60f65308-3510-40ca-83f0-e9c0151c
 ```
 
 The plugin also sets the `ngx.ctx.authenticated_consumer` variable, which can be using in other Kong plugins:
+
 ```
 ngx.ctx.authenticated_consumer = {
     id = "60f65308-3510-40ca-83f0-e9c0151cc680",   -- sub field from Userinfo
@@ -45,93 +46,70 @@ ngx.ctx.authenticated_consumer = {
 }
 ```
 
-
 ## Dependencies
 
 **kong-oidc** depends on the following package:
 
 - [`lua-resty-openidc`](https://github.com/pingidentity/lua-resty-openidc/)
 
-
 ## Installation
 
-If you're using `luarocks` execute the following:
+If youre using `luarocks` execute the following:
 
      luarocks install kong-oidc
 
 You also need to set the `KONG_PLUGINS` environment variable
 
      export KONG_PLUGINS=oidc
-     
+
 ## Usage
 
 ### Parameters
 
-| Parameter | Default  | Required | description |
-| --- | --- | --- | --- |
-| `name` || true | plugin name, has to be `oidc` |
-| `config.client_id` || true | OIDC Client ID |
-| `config.client_secret` || true | OIDC Client secret |
-| `config.discovery` | https://.well-known/openid-configuration | false | OIDC Discovery Endpoint (`/.well-known/openid-configuration`) |
-| `config.scope` | openid | false| OAuth2 Token scope. To use OIDC it has to contains the `openid` scope |
-| `config.ssl_verify` | false | false | Enable SSL verification to OIDC Provider |
-| `config.session_secret` | | false | Additional parameter, which is used to encrypt the session cookie. Needs to be random |
-| `config.introspection_endpoint` | | false | Token introspection endpoint |
-| `config.timeout` | | false | OIDC endpoint calls timeout |
-| `config.introspection_endpoint_auth_method` | client_secret_basic | false | Token introspection auth method. resty-openidc supports `client_secret_(basic|post)` |
-| `config.bearer_only` | no | false | Only introspect tokens without redirecting |
-| `config.realm` | kong | false | Realm used in WWW-Authenticate response header |
-| `config.logout_path` | /logout | false | Absolute path used to logout from the OIDC RP |
-
-
 | Parameter | Type | Default  | Required | description |
 | --- | --- | --- | --- | --- |
 | `name` | string | `oidc` | true | plugin name, has to be `oidc` |
-| `config.client_id` | string | | true | |
-| `config.client_secret` | string | | false | |
-| `config.discovery` | string | `https://.well-known/openid-configuration` | true | |
-| `config.introspection_endpoint` | string | | false | |
-| `config.timeout` | number | | false | |
-| `config.introspection_endpoint_auth_method` | string | | false | |
+| `config.client_id` | string | | true | OIDC Client ID  |
+| `config.client_secret` | string | | false | OIDC Client secret |
+| `config.discovery` | string | `https://.well-known/openid-configuration` | true | OIDC Discovery Endpoint (`/.well-known/openid-configuration`) |
+| `config.scope` | string | `openid` | true | OAuth2 Token scope. To use OIDC it has to contains the `openid` scope |
+| `config.introspection_endpoint` | string | | false | Token introspection endpoint given by the OpenID provider |
+| `config.timeout` | number | | false | OIDC endpoint calls timeout |
+| `config.introspection_endpoint_auth_method` | string | | false |  Token introspection auth method. resty-openidc supports `client_secret_(basic|post)` |
 | `config.introspection_expiry_claim` | string | exp | false | |
-| `config.introspection_interval` | number | 0 | false | |
+| `config.introspection_interval` | number | 0 | false | Configures the timeout for token introspection cache |
 | `config.introspection_cache_ignore` | boolean | false | false | |
-| `config.bearer_only` | string | `no` | true | |
-| `config.realm` | string | `kong` | true | |
+| `config.bearer_only` | string | `no` | true | Only introspect tokens without redirecting |
+| `config.realm` | string | `kong` | true | Realm used in WWW-Authenticate response header |
 | `config.redirect_uri_path` | string | | true | |
 | `config.redirect_uri` | string | | false | |
-| `config.scope` | string | `openid` | true | |
-
-
-response_type = { type = "string", required = true, default = "code" },
-ssl_verify = { type = "string", required = true, default = "no" },
-token_endpoint_auth_method = { type = "string", required = true, default = "client_secret_post" },
-session_secret = { type = "string", required = false, default = "623q4hR325t36VsCD3g567922IC0073T"  },
-recovery_page_path = { type = "string" },
-logout_path = { type = "string", required = false, default = '/logout' },
-redirect_after_logout_uri = { type = "string", required = false, default = '/' },
-post_logout_redirect_uri = { type = "string", required = false },
-redirect_after_logout_with_id_token_hint = { type = "boolean", required = false, default = true },
-filters = { type = "string" },
-session_name = { type = "string", required = false, default = 'session' },
-session_storage = { type = "string", required = false, default = 'cookie' },
-session_strategy = { type = "string", required = false, default = 'regenerate' },
-session_redis_host = { type = "string", required = false, default = '127.0.0.1' },
-session_redis_port = { type = "string", required = false, default = '6379' },
-session_redis_server_name = { type = "string", required = false },
-session_redis_auth = { type = "string", required = false },
-session_redis_uselocking = { type = "string", required = false, default = 'false' },
-session_redis_database = { type = "string", required = false },
-session_redis_prefix = { type = "string", required = false },
-session_redis_ssl = { type = "string", required = false, default = 'true' },
-session_redis_ssl_verify = { type = "string", required = false, default = 'off'},
-session_redis_pool_size = { type = "string", required = false, default = '10'},
-session_redis_pool_backlog = { type = "string", required = false, default = '10'},
-session_cookie_samesite = { type = "string", required = false, default = 'None'},
-session_cookie_secure = { type = "boolean", required = false, default = true},
-session_cookie_domain = { type = "string", required = false },
-
-
+| `config.response_type`  | string  | true  | "code"  | | 
+| `config.ssl_verify`  | string  | true  | "no"  | Enable SSL verification to OIDC Provider | 
+| `config.token_endpoint_auth_method`  | string  | true  | "client_secret_post"  | | 
+| `config.session_secret`  | string  | false  | "623q4hR325t36VsCD3g567922IC0073T"   | Additional parameter, which is used to encrypt the session cookie. Needs to be random and unique across all Kong instances| 
+| `config.recovery_page_path`  | string"  | |
+| `config.logout_path`  | string  | false  | /logout  | Absolute path used to logout from the OIDC RP | 
+| `config.redirect_after_logout_uri`  | string  | false  | /  | Uri to be redirected after logout process is done | 
+| `config.post_logout_redirect_uri`  | string  | false  | |
+| `config.redirect_after_logout_with_id_token_hint`  | boolean  | false  | true  |
+| `config.filters`  | string  | false |  | Regular expressions to be filtered in Kong requests (Ex: .js, .css)|
+| `config.session_name`  | string  | false  | session  | Name of the session cookie |
+| `config.session_storage`  | string  | false  | cookie  | |
+| `config.session_strategy`  | string  | false  | regenerate | |
+| `config.session_redis_host`  | string  | false  | 127.0.0.1  |  |
+| `config.session_redis_port`  | string  | false  | 6379  | |
+| `config.session_redis_server_name`  | string  | false  | | |
+| `config.session_redis_auth`  | string  | false  | |  |
+| `config.session_redis_uselocking`  | string  | false  | false  |  |
+| `config.session_redis_database`  | string  | false  |  |
+| `config.session_redis_prefix`  | string  | false  |  |
+| `config.session_redis_ssl`  | string  | false  | true  | Use true if redis connection has enabled encryption |
+| `config.session_redis_ssl_verify`  | string  | false  | off |  |
+| `config.session_redis_pool_size`  | string  | false  | 10|  |
+| `config.session_redis_pool_backlog`  | string  | false  | 10 | |
+| `config.session_cookie_samesite`  | string  | false  | None | Change to Strict if you need to enable the cookie only for the service domain |
+| `config.session_cookie_secure` | boolean  | false  | true |  |
+| `config.session_cookie_domain`  | string  | false  | | |
 
 ### Enabling
 
@@ -147,6 +125,7 @@ name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e
 ```
 
 To enable the plugin globally:
+
 ```
 POST /plugins HTTP/1.1
 Host: localhost:8001
@@ -157,6 +136,7 @@ name=oidc&config.client_id=kong-oidc&config.client_secret=29d98bf7-168c-4874-b8e
 ```
 
 A successful response:
+
 ```
 HTTP/1.1 201 Created
 Date: Tue, 24 Oct 2017 19:37:38 GMT
@@ -176,7 +156,7 @@ Server: kong/0.11.0
         "ssl_verify": "no",
         "client_secret": "29d98bf7-168c-4874-b8e9-9ba5e7382fa0",
         "token_endpoint_auth_method": "client_secret_post"
-    },
+     | 
     "id": "58cc119b-e5d0-4908-8929-7d6ed73cb7de",
     "enabled": true,
     "name": "oidc",
@@ -186,7 +166,8 @@ Server: kong/0.11.0
 
 ### Upstream API request
 
-The plugin adds a additional `X-Userinfo`, `X-Access-Token` and `X-Id-Token` headers to the upstream request, which can be consumer by upstream server. All of them are base64 encoded:
+The plugin adds a additional `X-Userinfo`, `X-Access-Token` and `X-Id-Token` headers to the upstream request, which can
+be consumer by upstream server. All of them are base64 encoded:
 
 ```
 GET / HTTP/1.1
@@ -209,7 +190,6 @@ X-Access-Token: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJGenFSY0N1Ry13
 X-Id-Token: eyJuYmYiOjAsImF6cCI6ImtvbmciLCJpYXQiOjE1NDg1MTA3NjksImlzcyI6Imh0dHA6XC9cLzE5Mi4xNjguMC45OjgwODBcL2F1dGhcL3JlYWxtc1wvbWFzdGVyIiwiYXVkIjoia29uZyIsIm5vbmNlIjoiZjRkZDQ1NmMwY2U2OGZhZmFiZjRmOGQwN2I0NGFhODYiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImF1dGhfdGltZSI6MTU0ODUxMDY5NywiYWNyIjoiMSIsInNlc3Npb25fc3RhdGUiOiJiNDZmODU2Ny0zODA3LTQ0YmMtYmU1Mi1iMTNiNWQzODI5MTQiLCJleHAiOjE1NDg1MTA4MjksImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwianRpIjoiMjI1ZDRhNDItM2Y3ZC00Y2I2LTkxMmMtOGNkYzM0Y2JiNTk2Iiwic3ViIjoiYTZhNzhkOTEtNTQ5NC00Y2UzLTk1NTUtODc4YTE4NWNhNGI5IiwidHlwIjoiSUQifQ==
 ```
 
-
 ## Development
 
 ### Running Unit Tests
@@ -224,7 +204,9 @@ This may take a while for the first run, as the docker image will need to be bui
 
 ### Building the Integration Test Environment
 
-To build the integration environment (Kong with the oidc plugin enabled, and Keycloak as the OIDC Provider), you will first need to find your computer's IP, and assign that to the environment variable `IP`. Finally, you will run the `./bin/build-env.sh` command. Here's an example:
+To build the integration environment (Kong with the oidc plugin enabled, and Keycloak as the OIDC Provider), you will
+first need to find your computers IP, and assign that to the environment variable `IP`. Finally, you will run
+the `./bin/build-env.sh` command. Heres an example:
 
 ```
 export IP=192.168.0.1
