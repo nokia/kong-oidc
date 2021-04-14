@@ -17,14 +17,11 @@ local function parseAuthorizationParams(params)
   if (not (params == nil)) then
     for i, name in ipairs(params) do
       local split = {}
-        print(name)
-      for e, pattern in string.gmatch(name, "(%w+)=(%w+)") do
+      for e, pattern in string.gmatch(name, "(.+)=(.+)") do
         split[e] = pattern
         table.insert(split, e)
         table.insert(split, pattern)
       end
-        print(split[1])
-        print(split[2])
       resultParams[split[1]] = split[2]
     end
   end
