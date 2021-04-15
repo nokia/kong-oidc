@@ -58,7 +58,7 @@ function M.get_options(config, ngx)
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
     redirect_after_logout_uri = config.redirect_after_logout_uri,
-    authorization_params = parseAuthorizationParams(config.authorization_params),
+    authorization_params = config.authorization_params,
   }
 end
 
