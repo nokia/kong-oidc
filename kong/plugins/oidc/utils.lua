@@ -12,23 +12,6 @@ local function parseFilters(csvFilters)
   return filters
 end
 
-local function parseAuthorizationParams(params)
-  local resultParams = {}
-  if (not (params == nil)) then
-    for i, name in ipairs(params) do
-      local split = {}
-      for e, pattern in string.gmatch(name, "(.+)=(.+)") do
-        split[e] = pattern
-        table.insert(split, e)
-        table.insert(split, pattern)
-      end
-      resultParams[split[1]] = split[2]
-    end
-  end
-  
-  return resultParams
-end
-
 function M.get_redirect_uri_path(ngx)
   local function drop_query()
     local uri = ngx.var.request_uri
