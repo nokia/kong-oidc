@@ -19,6 +19,6 @@ return {
     logout_path = { type = "string", required = false, default = '/logout' },
     redirect_after_logout_uri = { type = "string", required = false, default = '/' },
     filters = { type = "string" },
-    authorization_params = { type = "array", required = false }
+    authorization_params = { type = "table", required = false }
   }
 }
