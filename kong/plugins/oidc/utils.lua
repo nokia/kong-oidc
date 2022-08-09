@@ -50,6 +50,7 @@ function M.get_options(config, ngx)
     bearer_only = config.bearer_only,
     realm = config.realm,
     redirect_uri_path = config.redirect_uri_path or M.get_redirect_uri_path(ngx),
+    redirect_uri_scheme = config.redirect_uri_scheme,
     scope = config.scope,
     response_type = config.response_type,
     ssl_verify = config.ssl_verify,
