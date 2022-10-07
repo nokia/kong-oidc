@@ -12,6 +12,15 @@ local function parseFilters(csvFilters)
   return filters
 end
 
+function M.add_correlation_id_header(correlation_id_header_key, correlation_id_header_value)
+  return function(req)
+    local h = req.headers or {}
+    h[correlation_id_header_key] = correlation_id_header_value
+    req.headers = h
+    return req
+  end
+end
+
 function M.get_redirect_uri_path(ngx)
   local function drop_query()
     local uri = ngx.var.request_uri
@@ -40,7 +49,7 @@ function M.get_redirect_uri_path(ngx)
 end
 
 function M.get_options(config, ngx)
-  return {
+  local opts = {
     client_id = config.client_id,
     client_secret = config.client_secret,
     discovery = config.discovery,
@@ -57,8 +66,13 @@ function M.get_options(config, ngx)
     recovery_page_path = config.recovery_page_path,
     filters = parseFilters(config.filters),
     logout_path = config.logout_path,
-    redirect_after_logout_uri = config.redirect_after_logout_uri,
+    redirect_after_logout_uri = config.redirect_after_logout_uri
   }
+  if config.correlation_id_header then
+    local correlation_id_header_value = ngx.req.get_headers()[config.correlation_id_header]
+    opts.http_request_decorator = M.add_correlation_id_header(config.correlation_id_header, correlation_id_header_value)
+  end
+  return opts
 end
 
 function M.exit(httpStatusCode, message, ngxCode)

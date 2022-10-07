@@ -25,6 +25,47 @@ function TestUtils:testRedirectUriPath()
   lu.assertEquals(utils.get_redirect_uri_path(ngx), "/long/path/")
 end
 
+function TestUtils:testAddCorrelationIdHeader()
+  local correlation_id_header = "x-correlation-id"
+  local correlation_id_header_value = "booga"
+  local add_correlation_id_header_method = utils.add_correlation_id_header(correlation_id_header, correlation_id_header_value)
+  
+  local req1 = {}
+  req1 = add_correlation_id_header_method(req1)
+  lu.assertEquals(req1.headers[correlation_id_header], correlation_id_header_value)
+
+  local req2 = {
+    headers = {
+      dummy_header = "dontcare"
+    }
+  }
+  req2 = add_correlation_id_header_method(req2)
+  lu.assertEquals(req2.headers[correlation_id_header], correlation_id_header_value)
+  lu.assertEquals(req2.headers["dummy_header"], "dontcare")
+end
+
+function TestUtils:testCorrelationIdHeaderOptions()
+  local opts1 = utils.get_options({
+    client_id = 1,
+    client_secret = 2}, {var = {request_uri = "/path"},
+    req = {get_uri_args = function() return nil end}})
+
+  lu.assertEquals(opts1.http_request_decorator, nil)
+
+  local correlation_id_header = "correlation_id_header"
+  local correlation_id_header_value = "booga"
+  local opts2 = utils.get_options({
+    client_id = 1,
+    client_secret = 2,
+    correlation_id_header = correlation_id_header
+  }, {var = {request_uri = "/path"},
+    req = {get_headers = function() return {correlation_id_header=correlation_id_header_value} end,
+    get_uri_args = function() return nil end}})
+
+  local req = opts2.http_request_decorator({})
+  lu.assertEquals(req.headers[correlation_id_header], correlation_id_header_value)
+end
+
 function TestUtils:testOptions()
   local opts = utils.get_options({
     client_id = 1,
