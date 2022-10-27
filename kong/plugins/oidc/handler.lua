@@ -6,13 +6,7 @@ local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
 local session = require("kong.plugins.oidc.session")
 
-
-function OidcHandler:new()
-  OidcHandler.super.new(self, "oidc")
-end
-
 function OidcHandler:access(config)
-  OidcHandler.super.access(self)
   local oidcConfig = utils.get_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
