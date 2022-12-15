@@ -1,6 +1,7 @@
 local typedefs = require "kong.db.schema.typedefs"
 
 return {
+  name = "oidc-endpoint",
   fields = {
     { consumer = typedefs.no_consumer },
     { config = {
