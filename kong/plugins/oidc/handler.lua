@@ -9,7 +9,6 @@ local OidcHandler = {
 }
 
 function OidcHandler:access(config)
-  OidcHandler.super.access(self)
   local oidcConfig = utils.get_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
