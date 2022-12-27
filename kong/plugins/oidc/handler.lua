@@ -47,25 +47,26 @@ function handle(oidcConfig)
 end
 
 function make_oidc(oidcConfig)
-  ngx.log(ngx.DEBUG, "Kong oidc make_oidc, requested path: " .. ngx.var.request_uri)
-  kong.log.DEBUG("Kong oidc make_oidc")
+  ngx.log(ngx.DEBUG, "Oidc make_oidc, requested path: " .. ngx.var.request_uri)
   local res, err = require("resty.openidc").authenticate(oidcConfig)
   if err then
+    ngx.log(ngx.ERR, "Make oidc failed authenticate(oidcConfig) ")
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
       ngx.redirect(oidcConfig.recovery_page_path)
     end
+    ngx.log(ngx.ERR, "(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR")
     utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
   end
   return res
 end
 
 function introspect(oidcConfig)
-  ngx.log(ngx.DEBUG, "Kong oidc introspect, requested path: " .. ngx.var.request_uri)
-  kong.log.DEBUG("Kong oidc introspect")
+  ngx.log(ngx.DEBUG, "Oidc introspect, requested path: " .. ngx.var.request_uri)
   if utils.has_bearer_access_token() or oidcConfig.bearer_only == "yes" then
     local res, err = require("resty.openidc").introspect(oidcConfig)
     if err then
+      ngx.log(ngx.ERR, "OIDC introspect failed to oidc introspect")
       if oidcConfig.bearer_only == "yes" then
         ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
         utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
