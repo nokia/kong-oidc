@@ -47,7 +47,8 @@ function handle(oidcConfig)
 end
 
 function make_oidc(oidcConfig)
-  ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
+  ngx.log(ngx.DEBUG, "Kong oidc make_oidc, requested path: " .. ngx.var.request_uri)
+  kong.log.DEBUG("Kong oidc make_oidc")
   local res, err = require("resty.openidc").authenticate(oidcConfig)
   if err then
     if oidcConfig.recovery_page_path then
@@ -60,6 +61,8 @@ function make_oidc(oidcConfig)
 end
 
 function introspect(oidcConfig)
+  ngx.log(ngx.DEBUG, "Kong oidc introspect, requested path: " .. ngx.var.request_uri)
+  kong.log.DEBUG("Kong oidc introspect")
   if utils.has_bearer_access_token() or oidcConfig.bearer_only == "yes" then
     local res, err = require("resty.openidc").introspect(oidcConfig)
     if err then
