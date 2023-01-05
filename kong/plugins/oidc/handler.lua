@@ -1,18 +1,14 @@
-local BasePlugin = require "kong.plugins.base_plugin"
-local OidcHandler = BasePlugin:extend()
+
 local utils = require("kong.plugins.oidc.utils")
 local filter = require("kong.plugins.oidc.filter")
 local session = require("kong.plugins.oidc.session")
 
-OidcHandler.PRIORITY = 1000
-
-
-function OidcHandler:new()
-  OidcHandler.super.new(self, "oidc")
-end
+local OidcHandler = {
+  VERSION  = "1.0.0",
+  PRIORITY = 1000,
+}
 
 function OidcHandler:access(config)
-  OidcHandler.super.access(self)
   local oidcConfig = utils.get_options(config, ngx)
 
   if filter.shouldProcessRequest(oidcConfig) then
@@ -51,22 +47,26 @@ function handle(oidcConfig)
 end
 
 function make_oidc(oidcConfig)
-  ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
+  ngx.log(ngx.DEBUG, "Oidc make_oidc, requested path: " .. ngx.var.request_uri)
   local res, err = require("resty.openidc").authenticate(oidcConfig)
   if err then
+    ngx.log(ngx.ERR, "Make oidc failed authenticate(oidcConfig) ")
     if oidcConfig.recovery_page_path then
       ngx.log(ngx.DEBUG, "Entering recovery page: " .. oidcConfig.recovery_page_path)
       ngx.redirect(oidcConfig.recovery_page_path)
     end
+    ngx.log(ngx.ERR, "(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR")
     utils.exit(500, err, ngx.HTTP_INTERNAL_SERVER_ERROR)
   end
   return res
 end
 
 function introspect(oidcConfig)
+  ngx.log(ngx.DEBUG, "Oidc introspect, requested path: " .. ngx.var.request_uri)
   if utils.has_bearer_access_token() or oidcConfig.bearer_only == "yes" then
     local res, err = require("resty.openidc").introspect(oidcConfig)
     if err then
+      ngx.log(ngx.ERR, "OIDC introspect failed to oidc introspect")
       if oidcConfig.bearer_only == "yes" then
         ngx.header["WWW-Authenticate"] = 'Bearer realm="' .. oidcConfig.realm .. '",error="' .. err .. '"'
         utils.exit(ngx.HTTP_UNAUTHORIZED, err, ngx.HTTP_UNAUTHORIZED)
