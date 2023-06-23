@@ -1,8 +1,8 @@
 package = "kong-oidc"
-version = "1.1.0-0"
+version = "1.6.1-1"
 source = {
     url = "git://github.com/nokia/kong-oidc",
-    tag = "v1.1.0",
+    tag = "v1.6.1",
     dir = "kong-oidc"
 }
 description = {
