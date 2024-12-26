@@ -1,0 +1,45 @@
+image:
+  repository: malekeljaouadi/bitnami-kong-with-oidc
+  tag: latest
+  pullPolicy: IfNotPresent
+  debug: false
+database: postgresql
+replicaCount: 1
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 13.8.0-debian-11-r12
+  auth:
+    username: kong
+    password: "kong"
+    database: kong
+    postgresPassword: "kong"
+    usePasswordFiles: false
+  architecture: standalone
+kong:
+  extraEnvVars:
+  - name: KONG_LOG_LEVEL
+    value: "debug"
+  - name: KONG_PLUGINS
+    value: "bundled,oidc"
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+service:
+  type: ClusterIP
+  exposeAdmin: true
+ingressController:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/kong-ingress-controller
+    tag: 2.5.0-debian-11-r19
+    digest: ""
+    pullPolicy: IfNotPresent
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
