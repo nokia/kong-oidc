@@ -27,6 +27,7 @@ end
 
 function handle(oidcConfig)
   local response
+
   if oidcConfig.introspection_endpoint then
     response = introspect(oidcConfig)
     if response then
@@ -34,7 +35,24 @@ function handle(oidcConfig)
     end
   end
 
-  if response == nil then
+  if not response and oidcConfig.introspection_endpoints then
+    for i, endpoint in ipairs(oidcConfig.introspection_endpoints) do
+
+      local temp_config = {}
+      for k, v in pairs(oidcConfig) do
+        temp_config[k] = v
+      end
+      temp_config.introspection_endpoint = endpoint
+      response = introspect(temp_config)
+
+      if response then
+        utils.injectUser(response)
+        break
+      end
+    end
+  end
+
+  if not response then
     response = make_oidc(oidcConfig)
     if response then
       if (response.user) then
