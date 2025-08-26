@@ -32,6 +32,8 @@ function handle(oidcConfig)
     response = introspect(oidcConfig)
   end
 
+  -- AQUI DEVERIA SER OR, PARA NAO SER OBRIGATORIO TER INTRO_ENDPOINT
+
   if response == nil and oidcConfig.introspection_endpoints then
     for i, endpoint in ipairs(oidcConfig.introspection_endpoints) do
 
