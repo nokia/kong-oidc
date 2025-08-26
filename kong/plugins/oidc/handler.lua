@@ -30,11 +30,12 @@ function handle(oidcConfig)
 
   if oidcConfig.introspection_endpoint then
     response = introspect(oidcConfig)
+    if response then
+      utils.injectUser(response)
+    end
   end
 
-  -- AQUI DEVERIA SER OR, PARA NAO SER OBRIGATORIO TER INTRO_ENDPOINT
-
-  if response == nil and oidcConfig.introspection_endpoints then
+  if not response and oidcConfig.introspection_endpoints then
     for i, endpoint in ipairs(oidcConfig.introspection_endpoints) do
 
       local temp_config = {}
@@ -48,13 +49,10 @@ function handle(oidcConfig)
         utils.injectUser(response)
         break
       end
-  
     end
-  elseif response then
-    utils.injectUser(response)
   end
 
-  if response == nil then
+  if not response then
     response = make_oidc(oidcConfig)
     if response then
       if (response.user) then
